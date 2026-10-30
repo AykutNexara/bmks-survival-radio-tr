@@ -49,51 +49,51 @@ const t_menu_item MenuList[] =
 #ifdef ENABLE_SURVIVAL
 //   text,          menu ID              title
     // Basic
-    {"Group",       MENU_SRV_GROUP,      "USE GROUP"  },
-    {"Heard",       MENU_SRV_HEARD,      "LAST HEARD" },
-    {"Skip",        MENU_SRV_SKIP,       "SKIP LIST"  },
-    {"Favs",        MENU_SRV_FAV,        "FAVORITE"   },
-    {"Prio",        MENU_SRV_PRIO,       "PRIORITY"   },
-    {"Quiet",       MENU_SQL,            "SQUELCH"    },
-    {"Power",       MENU_TXP,            "TX POWER"   },
-    {"Eco",         MENU_SRV_ECO,        "SAVE POWER" },
-    {"Radio",       MENU_SRV_RADIO,      "FM RADIO"   },
-    {"Help",        MENU_SRV_HELP,       "MANUAL"     },
-    {"Adv",         MENU_SRV_ADV,        "ADVANCED"   },   // SURV_BASIC_COUNT items up to here
+    {"Grup",       MENU_SRV_GROUP,      "GRUP SEC"  },
+    {"Duyuln",       MENU_SRV_HEARD,      "SON DUYULAN" },
+    {"Atla",        MENU_SRV_SKIP,       "ATLA LISTE"  },
+    {"Favori",        MENU_SRV_FAV,        "FAVORI"   },
+    {"Oncel",        MENU_SRV_PRIO,       "ONCELIK"   },
+    {"Sessiz",       MENU_SQL,            "SQUELCH"    },
+    {"Guc",       MENU_TXP,            "VERICI GUCU"   },
+    {"Eko",         MENU_SRV_ECO,        "PIL TASARRF" },
+    {"Radyo",       MENU_SRV_RADIO,      "FM RADYO"   },
+    {"Yardim",        MENU_SRV_HELP,       "KILAVUZ"     },
+    {"Ileri",         MENU_SRV_ADV,        "GELISMIS"   },   // SURV_BASIC_COUNT items up to here
     // Advanced
-    {"FmScan",      MENU_SRV_FM_SCAN,    "FM SCAN"    },
-    {"Mod",         MENU_AM,             "MODULATION" },
-    {"Width",       MENU_W_N,            "BANDWIDTH"  },
-    {"Step",        MENU_STEP,           "TUNE STEP"  },
-    {"RxTone",      MENU_R_CTCS,         "HEAR TONE"  },
-    {"RxCode",      MENU_R_DCS,          "HEAR CODE"  },
-    {"TxTone",      MENU_T_CTCS,         "SEND TONE"  },
-    {"TxCode",      MENU_T_DCS,          "SEND CODE"  },
-    {"Shift",       MENU_SFT_D,          "TX SHIFT"   },
-    {"Offset",      MENU_OFFSET,         "TX OFFSET"  },
-    {"Resume",      MENU_SC_REV,         "AFTER CALL" },
-    {"Start",       MENU_SRV_C_START,    "SCAN START" },
-    {"End",         MENU_SRV_C_END,      "SCAN END"   },
-    {"TxPMR",       MENU_SRV_TX_PMR,     "PMR SEND"   },
-    {"TxFRS",       MENU_SRV_TX_FRS,     "FRS SEND"   },
-    {"TxMAR",       MENU_SRV_TX_MARINE,  "MARINE SEND"},
-    {"TxHAM",       MENU_SRV_TX_HAM,     "HAM SEND"   },
-    {"TxCB",        MENU_SRV_TX_CB,      "CB SEND"    },
-    {"TxAll",       MENU_SRV_TX_ALL,     "WIDE TX"    },
-    {"Rename",      MENU_MEM_NAME,       "CH NAME"    },
-    {"Lock",        MENU_AUTOLK,         "AUTO LOCK"  },
-    {"TxTime",      MENU_TOT,            "TX LIMIT"   },
-    {"Mic",         MENU_MIC,            "MIC GAIN"   },
-    {"Light",       MENU_ABR,            "BACKLIGHT"  },
-    {"Contr",       MENU_SET_CTR,        "CONTRAST"   },
-    {"Beep",        MENU_BEEP,           "KEY SOUND"  },
-    {"About",       MENU_VOL,            "RADIO INFO" },
-    {"Reset",       MENU_RESET,          "RESET RADIO"},
+    {"FmTara",      MENU_SRV_FM_SCAN,    "FM TARAMA"    },
+    {"Mod",         MENU_AM,             "MODULASYON" },
+    {"Bant",       MENU_W_N,            "BANT GENIS"  },
+    {"Adim",        MENU_STEP,           "AYAR ADIMI"  },
+    {"AlTon",      MENU_R_CTCS,         "ALMA TONU"  },
+    {"AlKod",      MENU_R_DCS,          "ALMA KODU"  },
+    {"VerTon",      MENU_T_CTCS,         "GONDER TONU"  },
+    {"VerKod",      MENU_T_DCS,          "GONDER KODU"  },
+    {"Kayma",       MENU_SFT_D,          "TX KAYMA"   },
+    {"Ofset",      MENU_OFFSET,         "TX OFSET"  },
+    {"Devam",      MENU_SC_REV,         "CAGRI SONU" },
+    {"Basla",       MENU_SRV_C_START,    "TARAMA BAS" },
+    {"Bitis",         MENU_SRV_C_END,      "TARAMA SON"   },
+    {"TxPMR",       MENU_SRV_TX_PMR,     "PMR TX"   },
+    {"TxFRS",       MENU_SRV_TX_FRS,     "FRS TX"   },
+    {"TxDNZ",       MENU_SRV_TX_MARINE,  "DENIZ TX"},
+    {"TxAMT",       MENU_SRV_TX_HAM,     "AMATOR TX"   },
+    {"TxCB",        MENU_SRV_TX_CB,      "CB TX"    },
+    {"TxHep",       MENU_SRV_TX_ALL,     "TUM BANT TX"    },
+    {"Isim",      MENU_MEM_NAME,       "KANAL ADI"    },
+    {"Kilit",        MENU_AUTOLK,         "OTO KILIT"  },
+    {"TxSure",      MENU_TOT,            "TX SINIRI"   },
+    {"Mik",         MENU_MIC,            "MIK KAZANC"   },
+    {"Isik",       MENU_ABR,            "ARKA ISIK"  },
+    {"Kontr",       MENU_SET_CTR,        "KONTRAST"   },
+    {"Bip",        MENU_BEEP,           "TUS SESI"  },
+    {"Bilgi",       MENU_VOL,            "CIHAZ BILGI" },
+    {"Sifir",       MENU_RESET,          "SIFIRLA"},
     // hidden menu items from here on
     // enabled if pressing both the PTT and upper side button at power-on
-    {"F Lock",      MENU_F_LOCK,         "FREQ LOCK"  },
-    {"BatCal",      MENU_BATCAL,         "BAT CALIB"  },
-    {"BatTyp",      MENU_BATTYP,         "BAT TYPE"   },
+    {"F Kilt",      MENU_F_LOCK,         "FREK KILIT"  },
+    {"PilKal",      MENU_BATCAL,         "PIL KALIBR"  },
+    {"PilTip",      MENU_BATTYP,         "PIL TIPI"   },
 #else
 //   text,          menu ID
     {"Step",        MENU_STEP          },
@@ -246,35 +246,35 @@ const t_menu_item MenuList[] =
 
 const uint8_t FIRST_HIDDEN_MENU_ITEM = MENU_F_LOCK;
 
-const char gSubMenu_TXP[][6] =
+const char gSubMenu_TXP[][8] =
 {
-    "USER",
-    "LOW 1",
-    "LOW 2",
-    "LOW 3",
-    "LOW 4",
-    "LOW 5",
-    "MID",
-    "HIGH"
+    "OZEL",
+    "DUSUK 1",
+    "DUSUK 2",
+    "DUSUK 3",
+    "DUSUK 4",
+    "DUSUK 5",
+    "ORTA",
+    "YUKSEK"
 };
 
 const char gSubMenu_SFT_D[][4] =
 {
-    "OFF",
+    "YOK",
     "+",
     "-"
 };
 
 const char gSubMenu_W_N[][7] =
 {
-    "WIDE",
-    "NARROW"
+    "GENIS",
+    "DAR"
 };
 
-const char gSubMenu_OFF_ON[][4] =
+const char gSubMenu_OFF_ON[][7] =
 {
-    "OFF",
-    "ON"
+    "KAPALI",
+    "ACIK"
 };
 
 const char gSubMenu_NA[4] =
@@ -357,7 +357,7 @@ const char gSubMenu_ROGER[][6] =
 const char gSubMenu_RESET[][4] =
 {
     "VFO",
-    "ALL"
+    "TUM"
 };
 
 const char * const gSubMenu_F_LOCK[] =
@@ -580,7 +580,7 @@ void UI_DisplayMenu(void)
         for (i = 1; i < 7; i++)
             gFrameBuffer[i][48] = 0xFF;   // divider R1..R5, the footer runs across
 
-        UI_PrintStringSmallBold(gMenuLevel ? "ADV" : "BASIC", 0, 0, 0);
+        UI_PrintStringSmallBold(gMenuLevel ? "ILERI" : "TEMEL", 0, 0, 0);
         UI_PrintStringSmallBold(MenuList[gMenuCursor].title, 50, 0, 0);
 
         if (gMenuCursor > first)
@@ -594,10 +594,10 @@ void UI_DisplayMenu(void)
             UI_PrintStringSmallNormal(MenuList[gMenuCursor + 1].name, 0, 0, 4);
 
         UI_PrintStringSmallNormal(
-            gAskForConfirmation          ? "M:YES  EXIT:NO" :
-            gIsInSubMenu                 ? "M:SAVE EXIT:CANCEL" :
-            id == MENU_SRV_ADV || id == MENU_SRV_HEARD || id == MENU_SRV_SKIP || id == MENU_SRV_HELP ? "M:OPEN EXIT:BACK" :
-            IS_SURV_ACTION(id)           ? "M:DO   EXIT:BACK" : "M:EDIT EXIT:BACK", 0, 0, 6);
+            gAskForConfirmation          ? "M:EVET EXIT:HAYIR" :
+            gIsInSubMenu                 ? "M:KAYIT EXIT:IPTAL" :
+            id == MENU_SRV_ADV || id == MENU_SRV_HEARD || id == MENU_SRV_SKIP || id == MENU_SRV_HELP ? "M:AC EXIT:GERI" :
+            IS_SURV_ACTION(id)           ? "M:YAP EXIT:GERI" : "M:DEGIS EXIT:GERI", 0, 0, 6);
     }
 #else
 #ifdef ENABLE_FEAT_F4HWN
@@ -716,13 +716,13 @@ void UI_DisplayMenu(void)
 
         case MENU_SRV_FM_SCAN:
             if (gSubMenuSelection == SURV_FMSCAN_LAST)
-                strcpy(String, "LAST\nGROUP");
+                strcpy(String, "SON\nGRUP");
             else
-                strcpy(String, gSubMenuSelection ? gSubMenu_SRV_MODE[gSubMenuSelection - 1] : "WATCH\nONLY");
+                strcpy(String, gSubMenuSelection ? gSubMenu_SRV_MODE[gSubMenuSelection - 1] : "SADECE\nIZLE");
             break;
 
         case MENU_SRV_TX_PMR ... MENU_SRV_TX_ALL:
-            strcpy(String, gSubMenuSelection ? "ALLOW" : "BLOCK");
+            strcpy(String, gSubMenuSelection ? "IZIN" : "YASAK");
             break;
 
         case MENU_SRV_ECO:
@@ -733,28 +733,28 @@ void UI_DisplayMenu(void)
         case MENU_SRV_SKIP:
         case MENU_SRV_HELP:
         case MENU_SRV_ADV:
-            strcpy(String, "OPEN");
+            strcpy(String, "AC");
             break;
 
         case MENU_SRV_FAV: {
             const uint8_t ch = gEeprom.ScreenChannel[gEeprom.TX_VFO];
-            strcpy(String, SURVIVAL_IsFavChannel(ch) ? "REMOVE" : "ADD");
+            strcpy(String, SURVIVAL_IsFavChannel(ch) ? "CIKAR" : "EKLE");
             break;
         }
 
         case MENU_SRV_PRIO:
-            strcpy(String, (gEeprom.ScreenChannel[gEeprom.TX_VFO] == gSurvivalPrio) ? "CLEAR" : "SET HERE");
+            strcpy(String, (gEeprom.ScreenChannel[gEeprom.TX_VFO] == gSurvivalPrio) ? "SIL" : "BUNU SEC");
             break;
 
         case MENU_SRV_RADIO:
-            strcpy(String, gFmRadioMode ? "CLOSE" : "OPEN");
+            strcpy(String, gFmRadioMode ? "KAPAT" : "AC");
             break;
 #endif
 
         case MENU_SQL:
 #ifdef ENABLE_SURVIVAL
             if (gSubMenuSelection == 0) {
-                strcpy(String, "OPEN");
+                strcpy(String, "AC");
                 break;
             }
 #endif
@@ -876,7 +876,7 @@ void UI_DisplayMenu(void)
             }
             else if(gSubMenuSelection < 61)
             {
-                sprintf(String, "%02dm:%02ds", (((gSubMenuSelection) * 5) / 60), (((gSubMenuSelection) * 5) % 60));
+                sprintf(String, "%02ddk:%02dsn", (((gSubMenuSelection) * 5) / 60), (((gSubMenuSelection) * 5) % 60));
                 #if !defined(ENABLE_SPECTRUM) || !defined(ENABLE_FMRADIO)
                 //ST7565_Gauge(4, 1, 60, gSubMenuSelection);
                 gaugeLine = 4;
@@ -915,7 +915,7 @@ void UI_DisplayMenu(void)
                 strcpy(String, gSubMenu_OFF_ON[0]);
             else
             {
-                sprintf(String, "%02dm:%02ds", ((gSubMenuSelection * 15) / 60), ((gSubMenuSelection * 15) % 60));
+                sprintf(String, "%02ddk:%02dsn", ((gSubMenuSelection * 15) / 60), ((gSubMenuSelection * 15) % 60));
                 #if !defined(ENABLE_SPECTRUM) || !defined(ENABLE_FMRADIO)
                 //ST7565_Gauge(4, 1, 40, gSubMenuSelection);
                 gaugeLine = 4;
@@ -1012,7 +1012,11 @@ void UI_DisplayMenu(void)
             const bool valid = RADIO_CheckValidChannel(gSubMenuSelection, false, 0);
 
             UI_GenerateChannelStringEx(String, valid, gSubMenuSelection);
+#ifdef ENABLE_SURVIVAL   // small on row 1: the big font on row 0 ran over the title
+            UI_PrintStringSmallNormal(String, menu_item_x1, menu_item_x2, 1);
+#else
             UI_PrintString(String, menu_item_x1, menu_item_x2, 0, 8);
+#endif
 
             if (valid)
             {
@@ -1060,7 +1064,7 @@ void UI_DisplayMenu(void)
 #endif
 
         case MENU_TOT:
-            sprintf(String, "%02dm:%02ds", (((gSubMenuSelection + 1) * 5) / 60), (((gSubMenuSelection + 1) * 5) % 60));
+            sprintf(String, "%02ddk:%02dsn", (((gSubMenuSelection + 1) * 5) / 60), (((gSubMenuSelection + 1) * 5) % 60));
             #if !defined(ENABLE_SPECTRUM) || !defined(ENABLE_FMRADIO)
             //ST7565_Gauge(4, 5, 179, gSubMenuSelection);
             gaugeLine = 4;
@@ -1228,7 +1232,7 @@ void UI_DisplayMenu(void)
 #else
             if(!gIsInSubMenu && gUnlockAllTxConfCnt>0 && gUnlockAllTxConfCnt<10)
 #endif
-                strcpy(String, "READ\nMANUAL");
+                strcpy(String, "OKU\nKILAVUZ");
             else
                 strcpy(String, gSubMenu_F_LOCK[gSubMenuSelection]);
             break;
@@ -1531,7 +1535,7 @@ void UI_DisplayMenu(void)
     }
 
     if ((UI_MENU_GetCurrentMenuId() == MENU_R_CTCS || UI_MENU_GetCurrentMenuId() == MENU_R_DCS) && gCssBackgroundScan)
-        UI_PrintString("SCAN", menu_item_x1, menu_item_x2, 4, 8);
+        UI_PrintString("TARA", menu_item_x1, menu_item_x2, 4, 8);
 
 #ifdef ENABLE_DTMF_CALLING
     if (UI_MENU_GetCurrentMenuId() == MENU_D_LIST && gIsDtmfContactValid) {
@@ -1561,7 +1565,7 @@ void UI_DisplayMenu(void)
          UI_MENU_GetCurrentMenuId() == MENU_MEM_NAME ||
          UI_MENU_GetCurrentMenuId() == MENU_DEL_CH) && gAskForConfirmation)
     {   // display confirmation
-        char *pPrintStr = (gAskForConfirmation == 1) ? "SURE?" : "WAIT!";
+        char *pPrintStr = (gAskForConfirmation == 1) ? "EMIN?" : "BEKLE";
 #ifdef ENABLE_SURVIVAL
         UI_PrintStringSmallBold(pPrintStr, menu_item_x1, menu_item_x2, 5);
 #else

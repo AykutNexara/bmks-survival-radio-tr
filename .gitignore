@@ -8,6 +8,8 @@ __pycache__/
 builds/*
 !builds/bmks.survival.bin
 !builds/bmks.survival.packed.bin
+!builds/bmks.survival.tr.bin
+!builds/bmks.survival.tr.packed.bin
 
 # screen capture frames (the sheets and single shots are kept)
 design/screens/seq/

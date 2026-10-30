@@ -47,10 +47,10 @@ static const char *Title(void)
         return "MENU";
 #ifdef ENABLE_FMRADIO
     if (gScreenToDisplay == DISPLAY_FM)
-        return "FM RADIO";
+        return "FM RADYO";
 #endif
     const uint8_t mode = SURVIVAL_GetMode();
-    return (mode == SURV_MODE_AIR) ? "AIR BAND" : gSubMenu_SRV_MODE[mode];
+    return (mode == SURV_MODE_AIR) ? "HAVA" : gSubMenu_SRV_MODE[mode];
 }
 
 static const uint8_t LOCK_ICON[7] = {0x78, 0x7E, 0x79, 0x49, 0x79, 0x7E, 0x78};
@@ -96,8 +96,8 @@ void UI_DisplayStatus(void)
 
 // key in capitals, then > and what it does in normal case; 18 characters per row.
 // The other pages come from the manual (design/manual.txt): F SHORTCUTS, KEYS, SIDE KEYS.
-static const char HELP_FM[] = "0>Exit FM\0" "3>Saved / tune\0" "*>Find all FM\0" "6>Help/Manual\0"
-                              "HOLD M>Save\0" "UP/DN>Tune\0";
+static const char HELP_FM[] = "0>FM kapat\0" "3>Kayitli/ayar\0" "*>Tum FM bul\0" "6>Yardim\0"
+                              "UZUN M>Kaydet\0" "UP/DN>Ayar\0";
 
 #define MANUAL_KEYS      0
 #define MANUAL_SIDE_KEYS 1
@@ -149,16 +149,16 @@ static const char *ActivityWord(void)
     if (FUNCTION_IsRx())
         return "RX";
     if (gScanStateDir != SCAN_OFF)
-        return (gScanStateDir == SCAN_FWD) ? "SCAN UP" : "SCAN DN";
+        return (gScanStateDir == SCAN_FWD) ? "TARA ^" : "TARA v";
     return NULL;
 }
 
 static void PowerText(char *s, uint8_t power)
 {
     if (power >= OUTPUT_POWER_LOW1 && power <= OUTPUT_POWER_LOW5)
-        sprintf(s, "LOW%u", power - OUTPUT_POWER_LOW1 + 1);
+        sprintf(s, "DSK%u", power - OUTPUT_POWER_LOW1 + 1);
     else
-        strcpy(s, (power == OUTPUT_POWER_MID) ? "MID" : (power == OUTPUT_POWER_HIGH) ? "HIGH" : "USER");
+        strcpy(s, (power == OUTPUT_POWER_MID) ? "ORTA" : (power == OUTPUT_POWER_HIGH) ? "YUKS" : "OZEL");
 }
 
 static void StepText(char *s, uint16_t step)   // 10 Hz units
@@ -174,11 +174,11 @@ static void StepText(char *s, uint16_t step)   // 10 Hz units
 static const char *VfoStateText(VfoState_t state)
 {
     switch (state) {
-        case VFO_STATE_BUSY:         return "CHANNEL BUSY";
-        case VFO_STATE_BAT_LOW:      return "BATTERY LOW";
-        case VFO_STATE_TX_DISABLE:   return "TX BLOCKED";
-        case VFO_STATE_TIMEOUT:      return "TX TIME LIMIT";
-        case VFO_STATE_VOLTAGE_HIGH: return "VOLTAGE HIGH";
+        case VFO_STATE_BUSY:         return "KANAL MESGUL";
+        case VFO_STATE_BAT_LOW:      return "PIL ZAYIF";
+        case VFO_STATE_TX_DISABLE:   return "TX YASAK";
+        case VFO_STATE_TIMEOUT:      return "TX SURE DOLDU";
+        case VFO_STATE_VOLTAGE_HIGH: return "YUKSEK VOLT";
         default:                     return NULL;
     }
 }
@@ -206,7 +206,7 @@ void UI_DisplayMain(void)
         return;
 
     if (gLowBattery && !gLowBatteryConfirmed) {
-        UI_DisplayPopup("LOW BATTERY");
+        UI_DisplayPopup("PIL ZAYIF");
         ST7565_BlitFullScreen();
         return;
     }
@@ -227,19 +227,19 @@ void UI_DisplayMain(void)
         }
     }
     if (mr && ch == gSurvivalPrio)
-        UI_PrintStringSmallBold("PRI", 105, 0, 0);
+        UI_PrintStringSmallBold("ONC", 105, 0, 0);
     if (!act && SURVIVAL_IsSkipped(v->pRX->Frequency))
-        UI_PrintStringSmallBold("SKIP", 70, 0, 0);
+        UI_PrintStringSmallBold("ATLA", 70, 0, 0);
     if (act)
         InvertRow(gFrameBuffer[0]);
 
     // R1-R2: name
     if (gInputBoxIndex > 0 && mr) {
-        sprintf(String, "CH %.3s", INPUTBOX_GetAscii());
+        sprintf(String, "KN %.3s", INPUTBOX_GetAscii());
     } else if (mr) {
         SETTINGS_FetchChannelName(String, ch);
         if (String[0] == 0)
-            sprintf(String, "CH %u", ch + 1);
+            sprintf(String, "KN %u", ch + 1);
     } else {
         uint32_t lo, hi;
         SURVIVAL_VfoRange(ch, &lo, &hi);
@@ -268,10 +268,10 @@ void UI_DisplayMain(void)
         StepText(Word, v->StepFrequency);
         sprintf(String, "%s %s SQL%u", gModulationStr[v->Modulation], Word, gEeprom.SQUELCH_LEVEL);
     } else if (!txOk) {
-        sprintf(String, "RX ONLY SQL%u", gEeprom.SQUELCH_LEVEL);
+        sprintf(String, "SADECE RX SQL%u", gEeprom.SQUELCH_LEVEL);
     } else {
         PowerText(Word, v->OUTPUT_POWER);
-        sprintf(String, "%s %s SQL%u", Word, v->CHANNEL_BANDWIDTH ? "NAR" : "WIDE", gEeprom.SQUELCH_LEVEL);
+        sprintf(String, "%s %s SQL%u", Word, v->CHANNEL_BANDWIDTH ? "DAR" : "GENIS", gEeprom.SQUELCH_LEVEL);
     }
     if (v->TX_OFFSET_FREQUENCY_DIRECTION != TX_OFFSET_FREQUENCY_DIRECTION_OFF)
         strcat(String, " DUP");
@@ -283,13 +283,13 @@ void UI_DisplayMain(void)
     const char *hint = VfoStateText(VfoState[vfo]);
     if (hint == NULL) {
         if (gEeprom.KEY_LOCK)
-            hint = "HOLD F:UNLOCK";
+            hint = "UZUN F:KILIT AC";
         else if (tx)
-            hint = "RELEASE PTT:STOP";
+            hint = "PTT BIRAK:DUR";
         else if (gScanStateDir != SCAN_OFF)
-            hint = "*:STOP UP/DN:STOP";
+            hint = "*:DUR UP/DN:DUR";
         else
-            hint = "HOLD M:MENU *:SCAN";
+            hint = "UZUN M:MENU *:TARA";
     }
     UI_PrintStringSmallNormal(hint, 0, 0, 6);
 

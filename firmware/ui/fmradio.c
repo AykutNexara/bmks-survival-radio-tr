@@ -66,18 +66,18 @@ void UI_DisplayFM(void)
 
     // R2: saved / tune / seek / find, or the save / delete question
     if (gAskToSave) {
-        sprintf(String, "SAVE AS %02u? HOLD M", gFM_ChannelPosition + 1);
+        sprintf(String, "%02u KAYDET? UZUN M", gFM_ChannelPosition + 1);
     } else if (gAskToDelete) {
-        sprintf(String, "DELETE %02u? HOLD M", gEeprom.FM_SelectedChannel + 1);
+        sprintf(String, "%02u SIL? UZUN M", gEeprom.FM_SelectedChannel + 1);
     } else if (gFM_ScanState != FM_SCAN_OFF) {
         if (gFM_AutoScan)
-            sprintf(String, "FIND ALL %02u/20", gFM_ChannelPosition);
+            sprintf(String, "TUMU BUL %02u/20", gFM_ChannelPosition);
         else
-            strcpy(String, (gFM_ScanState > 0) ? "SEEK UP" : "SEEK DOWN");
+            strcpy(String, (gFM_ScanState > 0) ? "ARA ^" : "ARA v");
     } else if (gEeprom.FM_IsMrMode) {
-        sprintf(String, "SAVED %02u", gEeprom.FM_SelectedChannel + 1);
+        sprintf(String, "KAYIT %02u", gEeprom.FM_SelectedChannel + 1);
     } else {
-        sprintf(String, "TUNE %d%s-%d",
+        sprintf(String, "AYAR %d%s-%d",
             BK1080_GetFreqLoLimit(gEeprom.FM_Band) / 10,
             gEeprom.FM_Band == 0 ? ".5" : "",
             BK1080_GetFreqHiLimit(gEeprom.FM_Band) / 10);
@@ -93,7 +93,7 @@ void UI_DisplayFM(void)
     else
         strcpy(Name, SURVIVAL_VfoLabel(channel));
     Name[12] = 0;
-    sprintf(String, "%s %s", SURVIVAL_FmBgScanning() ? "SCAN" : "WATCH", Name);
+    sprintf(String, "%s %s", SURVIVAL_FmBgScanning() ? "TARA" : "IZLE", Name);
     UI_PrintStringSmallBold(String, 0, 127, 4);
 
     const uint32_t f = gRxVfo->freq_config_RX.Frequency;
@@ -116,8 +116,8 @@ void UI_DisplayFM(void)
 
     // R6: keys
     UI_PrintStringSmallNormal(
-        (gFM_ScanState != FM_SCAN_OFF) ? "*:STOP" :
-        (gAskToSave || gAskToDelete)   ? "EXIT:CANCEL" : "*:SEEK HOLD M:SAVE", 0, 0, 6);
+        (gFM_ScanState != FM_SCAN_OFF) ? "*:DUR" :
+        (gAskToSave || gAskToDelete)   ? "EXIT:IPTAL" : "*:ARA UZUN M:KAYIT", 0, 0, 6);
 
     ST7565_BlitFullScreen();
 }

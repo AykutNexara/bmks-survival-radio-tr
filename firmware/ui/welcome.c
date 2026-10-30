@@ -40,8 +40,8 @@ void UI_DisplayReleaseKeys(void)
 #endif
     UI_DisplayClear();
 
-    UI_PrintString("RELEASE", 0, 127, 1, 10);
-    UI_PrintString("ALL KEYS", 0, 127, 3, 10);
+    UI_PrintString("TUSLARI", 0, 127, 1, 10);
+    UI_PrintString("BIRAKIN", 0, 127, 3, 10);
 
     ST7565_BlitStatusLine();  // blank status line
     ST7565_BlitFullScreen();

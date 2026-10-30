@@ -95,7 +95,7 @@ static void RemoveSkip(uint8_t index)
 }
 
 const char gSubMenu_SRV_MODE[SURV_MODE_COUNT][9] = {
-    "PMR446", "FRS", "MARINE", "AIR", "HAM", "CB", "FM RADIO", "CUSTOM", "FAV",
+    "PMR446", "FRS", "DENIZ", "HAVA", "AMATOR", "CB", "FM RADYO", "OZEL", "FAVORI",
 };
 
 #define SURV_AM     (1u << 0)
@@ -531,7 +531,7 @@ void SURVIVAL_MaskScanDigits(char *freq)
 
 const char *SURVIVAL_VfoLabel(uint8_t channel)
 {
-    return (channel == AIR_VFO_CHANNEL) ? "AIR BAND" : "CUSTOM";
+    return (channel == AIR_VFO_CHANNEL) ? "HAVA" : "OZEL";
 }
 
 void SURVIVAL_VfoRange(uint8_t channel, uint32_t *lower, uint32_t *upper)
@@ -577,7 +577,7 @@ void SURVIVAL_SetMode(uint8_t mode)
     } else if (!SelectModeChannel(mode, vfo)) {
         gBeepToPlay = BEEP_500HZ_60MS_DOUBLE_BEEP_OPTIONAL;   // FAV empty: on to the first group
         SelectModeChannel(SURV_MODE_PMR, vfo);
-        ShowMessage("FAV EMPTY", "F+7 ADDS");
+        ShowMessage("FAVORI BOS", "F+7 EKLER");
         gVfoConfigureMode = VFO_CONFIGURE_RELOAD;
         gRequestSaveVFO   = true;
         return;
@@ -691,7 +691,7 @@ static void RemoveFav(uint8_t c)
         gVfoConfigureMode          = VFO_CONFIGURE_RELOAD;
         gRequestSaveVFO            = true;
     }
-    ShowMessage("FAV REMOVED", name);
+    ShowMessage("FAVORI SILINDI", name);
 }
 
 void SURVIVAL_AddFav(void)
@@ -718,7 +718,7 @@ void SURVIVAL_AddFav(void)
     }
     if (slot == 0xFF) {
         gBeepToPlay = BEEP_500HZ_60MS_DOUBLE_BEEP_OPTIONAL;
-        ShowMessage("FAV FULL", NULL);
+        ShowMessage("FAVORI DOLU", NULL);
         return;
     }
 
@@ -732,7 +732,7 @@ void SURVIVAL_AddFav(void)
     SETTINGS_SaveChannel(slot, gEeprom.TX_VFO, &vfo, 2);
     SETTINGS_SaveChannelName(slot, name);
     gBeepToPlay = BEEP_1KHZ_60MS_OPTIONAL;
-    ShowMessage("ADDED TO FAV", name);
+    ShowMessage("FAVORI EKLENDI", name);
 }
 
 static void SetPrioFlag(uint8_t ch, bool on)
@@ -751,7 +751,7 @@ void SURVIVAL_TogglePrio(void)
     const uint8_t ch = gEeprom.ScreenChannel[gEeprom.TX_VFO];
     if (!IS_MR_CHANNEL(ch)) {   // AIR/CUSTOM: put the frequency into FAV first (F+7)
         gBeepToPlay = BEEP_500HZ_60MS_DOUBLE_BEEP_OPTIONAL;
-        ShowMessage("CHANNELS ONLY", "F+7: FAV FIRST");
+        ShowMessage("SADECE KANAL", "ONCE F+7 FAVORI");
         return;
     }
     if (IS_MR_CHANNEL(gSurvivalPrio))
@@ -761,9 +761,9 @@ void SURVIVAL_TogglePrio(void)
         char name[16] = {0};
         SetPrioFlag(gSurvivalPrio, true);
         SETTINGS_FetchChannelName(name, gSurvivalPrio);
-        ShowMessage("PRIORITY", name);
+        ShowMessage("ONCELIK", name);
     } else {
-        ShowMessage("PRIORITY OFF", NULL);
+        ShowMessage("ONCELIK YOK", NULL);
     }
 }
 
@@ -1047,14 +1047,14 @@ static void DisplayManual(void)
 
     if (sManual == MAN_PROMPT) {
         sprintf(String, "%u", (sManTimer + 1) / 2);
-        UI_PrintString("PRESS M", 0, 127, 0, 8);
-        UI_PrintString("FOR MANUAL", 0, 127, 2, 8);
+        UI_PrintString("M'YE BAS", 0, 127, 0, 8);
+        UI_PrintString("KILAVUZ ICIN", 0, 127, 2, 8);
         UI_PrintString(String, 0, 127, 4, 8);
-        UI_PrintStringSmallNormal("other key: skip", 0, 127, 6);
+        UI_PrintStringSmallNormal("diger tus: gec", 0, 127, 6);
     } else if (sManual == MAN_LANDING) {
-        static const char LANDING[] = "UP/DN>Choose topic\0" "M>Open topic\0" "UP/DN>Turn page\0"
-                                      "M>Next topic\0" "EXIT>Back to list\0" "F>Close manual\0"
-                                      "Any key>Topic list\0";
+        static const char LANDING[] = "UP/DN>Konu sec\0" "M>Konuyu ac\0" "UP/DN>Sayfa cevir\0"
+                                      "M>Sonraki konu\0" "EXIT>Listeye don\0" "F>Kilavuzu kapat\0"
+                                      "Her tus>Konu list\0";
         const char *p = LANDING;
         for (uint8_t row = 0; *p; row++, p = NextString(p))
             UI_PrintStringSmallNormal(p, 0, 0, row);
@@ -1098,7 +1098,7 @@ static void Header(const char *title, uint8_t n, uint8_t of)
 
 bool SURVIVAL_DrawHeader(void)
 {
-    static const char *const HELP_TITLE[] = {"F+KEY", "KEYS", "SIDE KEYS"};
+    static const char *const HELP_TITLE[] = {"F+TUS", "TUSLAR", "YAN TUSLAR"};
 
     if (SURVIVAL_HelpVisible()) {
         Header(HELP_TITLE[SURVIVAL_HelpPage()], SURVIVAL_HelpPage() + 1, 3);
@@ -1108,7 +1108,7 @@ bool SURVIVAL_DrawHeader(void)
         if (sManual == MAN_TOPIC)
             Header(ManualTopic(sManTopic), sManTopic + 1, ManualCount());
         else
-            Header("MANUAL", (sManual == MAN_INDEX) ? sManTopic + 1 : 0, (sManual == MAN_INDEX) ? ManualCount() : 0);
+            Header("KILAVUZ", (sManual == MAN_INDEX) ? sManTopic + 1 : 0, (sManual == MAN_INDEX) ? ManualCount() : 0);
         return true;
     }
     return false;
@@ -1126,7 +1126,7 @@ void SURVIVAL_ToggleSkip(void)
         if (sSkip[i] == f) {
             RemoveSkip(i);
             if (!scanning)
-                ShowMessage("NOT SKIPPED", "SCAN STOPS HERE");
+                ShowMessage("ATLANMIYOR", "TARAMA DURACAK");
             return;
         }
     }
@@ -1134,7 +1134,7 @@ void SURVIVAL_ToggleSkip(void)
     if (sSkipCount == SURV_SKIP_N) {
         gBeepToPlay = BEEP_500HZ_60MS_DOUBLE_BEEP_OPTIONAL;
         if (!scanning)
-            ShowMessage("SKIP LIST FULL", "MENU > SKIP");
+            ShowMessage("ATLAMA DOLU", "MENU > ATLA");
         return;
     }
     sSkip[sSkipCount++] = f;
@@ -1147,7 +1147,7 @@ void SURVIVAL_ToggleSkip(void)
         CHFRSCANNER_ContinueScanning();
         return;
     }
-    ShowMessage("SKIPPED", "SCAN PASSES BY");
+    ShowMessage("ATLANDI", "TARAMA GECER");
 }
 
 void SURVIVAL_ShowSkipList(void)
@@ -1273,10 +1273,10 @@ void SURVIVAL_DisplayLog(void)
     }
 
     if (sSkipView) {
-        sprintf(String, "SKIP %u/%u  M:DEL", sSkipCount, SURV_SKIP_N);
+        sprintf(String, "ATLA %u/%u M:SIL", sSkipCount, SURV_SKIP_N);
         UI_PrintStringSmallBold(String, 0, 127, 0);
         if (sSkipCount == 0)
-            UI_PrintStringSmallNormal("empty, F+8 adds", 0, 127, 3);
+            UI_PrintStringSmallNormal("bos, F+8 ekler", 0, 127, 3);
         const uint8_t top = (sLogCursor > 5) ? sLogCursor - 5 : 0;
         for (uint8_t row = 0; row < 6 && top + row < sSkipCount; row++) {
             const uint32_t f = sSkip[top + row];
@@ -1287,10 +1287,10 @@ void SURVIVAL_DisplayLog(void)
         return;
     }
 
-    UI_PrintStringSmallBold("HEARD   M:GO", 0, 127, 0);
+    UI_PrintStringSmallBold("DUYULAN  M:GIT", 0, 127, 0);
 
     if (sHeardCount == 0)
-        UI_PrintStringSmallNormal("nothing yet", 0, 127, 3);
+        UI_PrintStringSmallNormal("henuz yok", 0, 127, 3);
 
     const uint8_t first = (sLogCursor > 5) ? sLogCursor - 5 : 0;
     for (uint8_t row = 0; row < 6 && first + row < sHeardCount; row++) {
@@ -1304,9 +1304,9 @@ void SURVIVAL_DisplayLog(void)
             sprintf(Name, "%lu.%04lu", h->freq / 100000, (h->freq / 10) % 10000);
 
         if (min < 60)
-            sprintf(String, "%c%-10s %2lum", (first + row == sLogCursor) ? '>' : ' ', Name, min);
+            sprintf(String, "%c%-10s %2ludk", (first + row == sLogCursor) ? '>' : ' ', Name, min);
         else
-            sprintf(String, "%c%-10s %2luh", (first + row == sLogCursor) ? '>' : ' ', Name, min / 60);
+            sprintf(String, "%c%-10s %2lusa", (first + row == sLogCursor) ? '>' : ' ', Name, min / 60);
         UI_PrintStringSmallNormal(String, 1, 0, row + 1);
     }
 

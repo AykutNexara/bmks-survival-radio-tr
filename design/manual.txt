@@ -1,234 +1,240 @@
-# BMKs Survival Radio manual (F+6 on the radio)
-# Built into the firmware by tools/manual2c.py -> firmware/app/survival_manual.c
-# "== TITLE" starts a topic (title max 12 chars), every other line is one screen row (max 18 chars).
-# The first two topics are also pages 2 and 3 of the F key help. Lines starting with '#' are comments.
+# BMKs Survival Radio kilavuzu - Turkce (telsizde F+6)
+# tools/manual2c.py ile firmware/app/survival_manual.c dosyasina cevrilir.
+# "== BASLIK" yeni konu (baslik en fazla 12 karakter), diger her satir bir ekran satiri (en fazla 18).
+# Ilk iki konu F tusu yardiminin 2. ve 3. sayfasidir. '#' ile baslayan satirlar aciklamadir.
+# Ekran fontunda Turkce harf yok: c, g, i, o, s, u kullanilir.
 
-== KEYS
-M>Next group
-HOLD M>Menu
-*>Scan / stop
-UP/DN>Channel/step
-HOLD UP/DN>Scan
-0-9>Type ch / freq
-EXIT>Clear typing
-HOLD F>Key lock
-PTT>Talk (if OK)
+== TUSLAR
+M>Sonraki grup
+UZUN M>Menu
+*>Tara / dur
+UP/DN>Kanal/adim
+UZUN UP/DN>Tara
+0-9>Kanal/frek yaz
+EXIT>Yaziyi sil
+UZUN F>Tus kilidi
+PTT>Konus (izinse)
 
-== SIDE KEYS
-SIDE1>Light, blink
-      Strobe, SOS
-      then off
-HOLD SIDE1>Monitor
-  (squelch open)
-SIDE2>FM radio
-HOLD SIDE2>Scan
+== YAN TUSLAR
+YAN1>Isik, yanip
+  soner, strobe,
+  SOS, kapali
+UZUN YAN1>Dinle
+  (squelch acik)
+YAN2>FM radyo
+UZUN YAN2>Tara
 
-== F SHORTCUTS
-Tap F, then a key:
-0>FM radio
-4>Heard list
-5>Priority
-6>Help/Manual
-7>Favorite
-8>Skip in scan
+== F KISAYOL
+F'ye bas, sonra:
+0>FM radyo
+4>Duyulanlar
+5>Oncelik
+6>Yardim/Kilavuz
+7>Favori
+8>Taramada atla
 UP/DN>Squelch
-*>Scan
-F again>Cancel
+*>Tara
+F tekrar>Iptal
 
-== GROUPS
-M tap steps groups
-PMR446 EU, 16 ch
-FRS US/CA, 22 ch
-MARINE VHF + WX
-AIR 118-137 AM
-HAM 2m/70cm calls
-CB 40 ch, 27 MHz
-FM RADIO broadcast
-CUSTOM own range
-FAV your channels
+== GRUPLAR
+M kisa: grup degis
+PMR446 AB, 16 kn
+FRS ABD/KAN, 22 kn
+DENIZ VHF + hava
+  durumu (WX)
+HAVA 118-137 AM
+AMATOR 2m/70cm
+  cagri kanallari
+CB 40 kn, 27 MHz
+FM RADYO yayin
+OZEL kendi aralik
+FAVORI kanallarin
 
-== SCAN
-*>Start or stop
-HOLD UP/DN>Scan
-  up or down
-Stops on a signal,
-  then listen.
-*>Scan on
-UP/DN>Stop here
-Noise stops it?
-  F+8 skips it.
-Band scans show
-  123.4---- while
-  moving.
+== TARAMA
+*>Baslat / durdur
+UZUN UP/DN>Tara
+  yukari / asagi
+Sinyalde durur,
+  sonra dinle.
+*>Taramaya devam
+UP/DN>Burada dur
+Gurultu durdurdu?
+  F+8 onu atlar.
+Bant taramasinda
+  kHz: 123.4----
+  (ilerlerken)
 
-== SKIP LIST
-F+8 while a scan
-  sits on noise:
-  skip it, scan on
-F+8 at rest:
-  add / remove
-A skipped freq
-  never stops a
-  scan. You can
-  still tune it.
-Menu>Skip: list,
-  M deletes (16)
+== ATLA LISTE
+Tarama gurultude
+  dururken F+8:
+  atla, devam et
+Dururken F+8:
+  ekle / cikar
+Atlanan frekansta
+  tarama durmaz.
+Elle yine secilir
+Menu>Atla: liste,
+  M siler (16)
 
-== FAVORITES
-F+7>Put this ch
-  or freq in FAV
-F+7 again>Remove
-M to FAV group:
-  use, scan them
-Menu>Adv>Rename
-  gives a name
-58 places
+== FAVORILER
+F+7>Bu kanal/frek
+  favoriye eklenir
+F+7 tekrar>Cikar
+M ile FAVORI grup:
+  kullan, tara
+Menu>Ileri>Isim
+  ad verir
+58 yer
 
-== PRIORITY
-F+5>This channel
-  is priority PRI
-Channel scans look
-  at it every 20
-  steps
-F+5 again>Clear
-Channels only,
-  not AIR/CUSTOM
+== ONCELIK
+F+5>Bu kanal
+  oncelikli (ONC)
+Kanal taramasi
+  20 adimda bir
+  ona bakar
+F+5 tekrar>Sil
+Sadece kanallar,
+  HAVA/OZEL degil
 
-== HEARD LIST
-F+4>Last 8 heard
-  with age m / h
-UP/DN>Choose
-M>Go there
-EXIT>Back
-Also Menu>Heard
+== DUYULANLAR
+F+4>Son 8 alim,
+  kac dk/sa once
+UP/DN>Sec
+M>Oraya git
+EXIT>Geri
+Menu>Duyuln ile de
 
-== FM RADIO
-SIDE2/F+0>On, off
-UP/DN>Tune / saved
-*>Seek next
-HOLD M>Save
-F+*>Find all (20)
-F+3>Saved / tune
-EXIT>Leave FM
-A scan running
-  before FM goes
-  on behind it; a
-  call opens it.
+== FM RADYO
+YAN2/F+0>Ac, kapa
+UP/DN>Ayar/kayitli
+*>Sonrakini ara
+UZUN M>Kaydet
+F+*>Tumu bul (20)
+F+3>Kayitli / ayar
+EXIT>FM'den cik
+FM oncesi tarama
+  arkada surer;
+  cagri gelince
+  ona gecer.
 
-== AIR BAND
+== HAVA BANDI
 118-137 MHz AM,
-  25 kHz steps
-Listen only,
-  sending blocked
-121.500 = air
-  emergency
-*>Scan the band
-0-9>Type a freq
+  25 kHz adim
+Sadece dinleme,
+  gonderme yasak
+121.500 = hava
+  acil durum
+*>Bandi tara
+0-9>Frekans yaz
 
-== CUSTOM
-Your own range:
-Menu>Adv>Start,
-  End and Step
-*>Scan it
-0-9>Type a freq
-Sends only where
-  TX is allowed
+== OZEL ARALIK
+Kendi araligin:
+Menu>Ileri>Basla,
+  Bitis ve Adim
+*>Tara
+0-9>Frekans yaz
+Sadece izinli
+  yerde gonderir
 
-== SENDING
-PTT sends FM only
-  on allowed bands
-PMR, FRS: on
-MARINE, HAM, CB:
-  Adv>TxMAR/HAM/CB
-TxAll>Any other
-Always blocked:
+== GONDERME
+PTT sadece izinli
+  bantta FM yollar
+PMR, FRS: acik
+DENIZ, AMATOR, CB:
+  Ileri>TxDNZ,
+  TxAMT, TxCB
+TxHep>Kalan tumu
+Hep yasak:
   88-137, 225-400,
   406.0-406.1 MHz,
-  marine ch 70
-Licence? Check
-  your local law.
+  deniz kanal 70
+Lisans? Yerel
+  yasaya bak.
 
 == SQUELCH
-Hides noise when
-  nobody talks
-F+UP/DN or
-  Menu>Quiet
-0=open, 9=only
-  strong signals
-1-2 good for scan
+Kimse konusmazken
+  gurultuyu keser
+F+UP/DN veya
+  Menu>Sessiz
+0=acik, 9=sadece
+  guclu sinyal
+Tarama: 1-2 iyi
 
 == MENU
-HOLD M>Open
-UP/DN>Choose
-M>Edit, M>Save
-EXIT>Cancel, back
-Adv>More settings
-Help>This manual
+UZUN M>Ac
+UP/DN>Sec
+M>Degistir,M>Kayit
+EXIT>Iptal, geri
+Ileri>Daha fazla
+Yardim>Bu kilavuz
 
-== BATTERY
-Top right: volts
-  and 3 bars
-Menu>Eco ON:
-  saves power,
-  short light
-LOW power is fine
-  for near calls
+== PIL
+Sag ust: volt
+  ve 3 cizgi
+Menu>Eko ACIK:
+  pil tasarrufu,
+  kisa isik
+DUSUK guc yakin
+  gorusme icin
+  yeterli
 
-== KEY LOCK
-HOLD F>Lock keys
-HOLD F>Unlock
-Side keys still
-  work
-Menu>Adv>Lock:
-  auto lock time
+== TUS KILIDI
+UZUN F>Kilitle
+UZUN F>Kilidi ac
+Yan tuslar yine
+  calisir
+Menu>Ileri>Kilit:
+  oto kilit suresi
 
-== RESET
-Menu>Adv>Reset
-  ALL: factory
-  channels again
-Clears FAV, skip
-  list, settings
+== SIFIRLAMA
+Menu>Ileri>Sifir
+  TUM: fabrika
+  kanallari geri
+FAVORI, atla
+  listesi, ayarlar
+  silinir
 
-== EMERGENCY
-Life at risk:
-  any channel OK
-MARINE ch16
-  156.800 distress
-CB ch 9 27.065
-PMR ch 8 (some
-  areas)
-HAM 145.500 EU
-  146.520 US
-AIR 121.500 listen
-Listen first!
+== ACIL DURUM
+Hayati tehlike:
+  her kanal olur
+DENIZ kn16
+  156.800 tehlike
+CB kn 9 27.065
+PMR kn 8 (bazi
+  bolgeler)
+AMATOR 145.500 AB
+  146.520 ABD
+HAVA 121.500 dinle
+Once dinle!
 
-== MAYDAY CALL
+== MAYDAY
 MAYDAY x3
-This is (name) x3
-MAYDAY (name)
-Where you are
-What happened
-Help you need
-How many people
-OVER, then listen
-Again every 2 min
-Urgent, no danger
-  to life: PAN-PAN
+Burasi (isim) x3
+MAYDAY (isim)
+Neredesin
+Ne oldu
+Ne yardim lazim
+Kac kisi
+OVER, sonra dinle
+2 dk'da bir tekrar
+Acil ama hayati
+  tehlike yok:
+  PAN-PAN
 
-== RADIO TIPS
-Go high, clear
-  view of the sky
-Antenna upright
-Listen before
-  you talk
-Short calls, then
-  wait
-Agree times: e.g.
-  top of each hour
-Eco ON, LOW power
-  save battery
+== TELSIZ IPUC
+Yuksege cik, acik
+  gokyuzu gor
+Anten dik
+Konusmadan once
+  dinle
+Kisa cagri, sonra
+  bekle
+Saat belirleyin:
+  orn. saat basi
+Eko ACIK+DUSUK guc
+  pil tasarrufu
 
-== PHONETIC
+== FONETIK
 Alfa Bravo Charlie
 Delta Echo Foxtrot
 Golf Hotel India
@@ -240,58 +246,58 @@ Uniform Victor
 Whiskey X-ray
 Yankee Zulu
 
-== SOS SIGNALS
-Morse SOS:
+== SOS ISARETI
+Mors SOS:
   ... --- ...
-3 of anything =
-  help: 3 fires,
-  whistles, lights
-SIDE1 x4>SOS light
-Ground signs:
-  V need help
-  X need medic
-  -> went this way
+3'lu her sey =
+  yardim: 3 ates,
+  duduk, isik
+YAN1 x4>SOS isigi
+Yer isaretleri:
+  V yardim lazim
+  X doktor lazim
+  -> bu yone gitti
 
-== RULE OF 3
-You can last about
-3 min without air
-3 h in cold
-  without shelter
-3 days no water
-3 weeks no food
-Order: safety,
-  shelter, water,
-  signal, food
+== 3 KURALI
+Insan yaklasik:
+3 dk havasiz
+3 sa soguktan
+  korunmasiz
+3 gun susuz
+3 hafta yemeksiz
+Sira: guvenlik,
+  barinak, su,
+  isaret, yemek
 
-== WATER
-Boil 1 min (3 min
-  above 2000 m)
-Or filter + tabs
-Clear running
-  water is better
-Need 2-3 L a day
+== SU
+1 dk kaynat
+(2000 m ustu 3 dk)
+Veya filtre+tablet
+Akan berrak su
+  daha iyi
+Gunde 2-3 L gerek
 
-== DIRECTION
-Sun rises east,
-  sets west
-Noon sun: south
-  (north half of
-  the world)
-North star: follow
-  the 2 end stars
-  of Big Dipper
-South half: long
-  axis of the
-  Southern Cross
+== YON BULMA
+Gunes doguda
+  dogar, batida
+  batar
+Ogle gunesi: guney
+  (kuzey yarikure)
+Kutup yildizi:
+  Buyuk Ayi'nin uc
+  2 yildizini izle
+Guney yarikure:
+  Guney Haci uzun
+  ekseni
 
-== FIRST AID
-Check danger first
-Bleeding: press
-  hard, keep on
-Not breathing:
-  call help, CPR
-  30 push, 2 blow
-Keep them warm
-  and still
-Breaks: do not
-  move, support
+== ILK YARDIM
+Once tehlikeye bak
+Kanama: sert bas,
+  birakma
+Nefes yok: yardim
+  cagir, CPR
+  30 bas, 2 nefes
+Sicak ve hareket-
+  siz tut
+Kirik: oynatma,
+  destekle
