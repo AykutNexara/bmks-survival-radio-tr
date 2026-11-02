@@ -12,7 +12,10 @@ Türkçeye çevirir ve iki küçük ekran düzeltmesi içerir. Orijinal İngiliz
 - **Kılavuz (F+6):** 27 konunun hepsi Türkçe (`design/manual.txt`). İngilizce metin `design/manual.en.txt` içinde duruyor.
 - **Menü:** Menü adları, başlıklar, seçenekler ve alt satır ipuçları Türkçe (Grup, Favori, Sessiz, Ileri; KAPALI/ACIK, IZIN/YASAK...).
 - **Ana ekran, FM ekranı, mesajlar:** KANAL MESGUL, PIL ZAYIF, FAVORI EKLENDI, M'YE BAS / KILAVUZ ICIN...
-- **Gruplar:** PMR446, FRS, DENIZ, HAVA, AMATOR, CB, FM RADYO, OZEL, FAVORI.
+- **Gruplar:** PMR446, DENIZ, HAVA, AMATOR, CB, FM RADYO, OZEL, FAVORI.
+- **FRS kaldırıldı:** FRS (462/467 MHz) ABD ve Kanada'nın lisanssız servisidir, Türkiye'de kullanılamaz.
+  Bu sürümde FRS grubu ve TxFRS ayarı yoktur. Türkiye'de lisanssız telsiz PMR446'dır.
+- **FAVORI:** Kendi kanalların için 80 yer (telsizde kanal 121–200).
 - **Tuş adları** cihazdaki gibi kaldı: M, F, EXIT, PTT, UP/DN. "Basılı tut" = **UZUN**, yan tuşlar = **YAN1 / YAN2**.
 - **Değişmeyenler:** Fonetik alfabe (Alfa, Bravo...) ve MAYDAY, PAN-PAN, OVER uluslararası olduğu için aynı kaldı.
 - **Düzeltme:** Menüde *Isim* (kanal adı) ekranında kanal numarası başlığın üstüne biniyordu. Artık bir alt satırda küçük yazılıyor.
@@ -61,11 +64,27 @@ Geri dönmek için başka bir firmware'i (örneğin İngilizce `builds/bmks.surv
 ## Gönderme (TX) hakkında
 
 Firmware sadece *Menu > Ileri* içinde açtığın bantlarda FM göndermeye izin verir
-(TxPMR, TxFRS, TxDNZ, TxAMT, TxCB, TxHep). Başta sadece PMR ve FRS açıktır.
+(TxPMR, TxDNZ, TxAMT, TxCB, TxHep). Başta sadece PMR açıktır.
 Bulunduğun yerde lisanssız olup olmadıklarını kontrol et. Deniz, amatör ve birçok CB kullanımı lisans ister.
 
 Firmware olduğu gibi, hiçbir garanti olmadan verilir. Yükleme riski sana aittir.
 Sertifikalı bir acil durum cihazı değildir.
+
+## Ayar aracı (bilgisayardan düzenleme)
+
+[`docs/index.html`](docs/index.html) tarayıcıda çalışan bir ayar aracıdır (Chrome ya da Edge, programlama kablosu).
+Depoda GitHub Pages açıksa adresi: `https://aykutnexara.github.io/bmks-survival-radio-tr/`.
+Dosyayı indirip Chrome'a sürükleyerek de açabilirsin.
+
+- Telsizden okur, 8 KB EEPROM yedeğini indirir, yedek dosyasını telsiz olmadan açar.
+- Değiştirip geri yazar: squelch, Eko, arka ışık, tuş sesi, otomatik kilit, TX süre sınırı, mikrofon,
+  FM arka plan izleme, OZEL aralık, TX izinleri.
+- **FAVORI kanalları:** Kendi rölelerini ve frekanslarını ekle, düzenle, sil (ad, frekans, kaydırma, ton, güç, bant).
+  CSV ile içe ve dışa aktarılabilir. Sütunlar: `ad;alma_mhz;kaydirma_mhz;gonderme_tonu;alma_tonu;guc;bant;mod`
+  (örnek satır: `ROLE ADI;145.67500;-0.6;88.5;;Yüksek;Geniş;FM`).
+- Güvenlik: Sabit kanallara (PMR, Deniz, CB…) ve kalibrasyona yazmaz. Yazmadan önce otomatik yedek indirir,
+  yazdıktan sonra geri okuyup kontrol eder, sonra telsizi yeniden başlatır.
+- Önce telsizi aç, sonra kabloyu tak. Telsiz kablo takılıyken açılırsa yükleme moduna girebilir.
 
 ## Kaynaktan derleme
 
