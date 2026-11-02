@@ -3,6 +3,9 @@
 Quansheng UV-K5 / UV-K6 el telsizi için **BMKs Survival Radio** firmware'inin Türkçe sürümü.
 Menü, ekran mesajları ve dahili kılavuz (F+6) Türkçedir.
 
+**🔧 Ayar aracını aç: [aykutnexara.github.io/bmks-survival-radio-tr](https://aykutnexara.github.io/bmks-survival-radio-tr/)**
+· **⬇ Firmware indir: [son sürüm](../../releases/latest)**
+
 Bu depo, Melih Karakelle'nin [melihkarakelle/bmks-survival-radio](https://github.com/melihkarakelle/bmks-survival-radio)
 projesinin bir fork'udur. Bütün özellikler ve emek orijinal projeye aittir. Bu fork sadece yazıları
 Türkçeye çevirir ve iki küçük ekran düzeltmesi içerir. Orijinal İngilizce açıklama: [README.en.md](README.en.md).
@@ -72,19 +75,35 @@ Sertifikalı bir acil durum cihazı değildir.
 
 ## Ayar aracı (bilgisayardan düzenleme)
 
-[`docs/index.html`](docs/index.html) tarayıcıda çalışan bir ayar aracıdır (Chrome ya da Edge, programlama kablosu).
-Depoda GitHub Pages açıksa adresi: `https://aykutnexara.github.io/bmks-survival-radio-tr/`.
-Dosyayı indirip Chrome'a sürükleyerek de açabilirsin.
+Adres: **https://aykutnexara.github.io/bmks-survival-radio-tr/** (kurulum gerekmez, tarayıcıda çalışır).
 
-- Telsizden okur, 8 KB EEPROM yedeğini indirir, yedek dosyasını telsiz olmadan açar.
-- Değiştirip geri yazar: squelch, Eko, arka ışık, tuş sesi, otomatik kilit, TX süre sınırı, mikrofon,
-  FM arka plan izleme, OZEL aralık, TX izinleri.
-- **FAVORI kanalları:** Kendi rölelerini ve frekanslarını ekle, düzenle, sil (ad, frekans, kaydırma, ton, güç, bant).
-  CSV ile içe ve dışa aktarılabilir. Sütunlar: `ad;alma_mhz;kaydirma_mhz;gonderme_tonu;alma_tonu;guc;bant;mod`
-  (örnek satır: `ROLE ADI;145.67500;-0.6;88.5;;Yüksek;Geniş;FM`).
-- Güvenlik: Sabit kanallara (PMR, Deniz, CB…) ve kalibrasyona yazmaz. Yazmadan önce otomatik yedek indirir,
-  yazdıktan sonra geri okuyup kontrol eder, sonra telsizi yeniden başlatır.
-- Önce telsizi aç, sonra kabloyu tak. Telsiz kablo takılıyken açılırsa yükleme moduna girebilir.
+**Gerekenler:** Chrome ya da Edge (Firefox ve Safari seri bağlantıyı desteklemez), K tipi USB programlama kablosu,
+telsizde bu firmware.
+
+**Kullanım:**
+1. **Önce** telsizi normal aç (PTT'ye basmadan), **sonra** kabloyu tak.
+   Telsiz kablo takılıyken açılırsa yükleme moduna girebilir (ekran boş kalır).
+2. **1. Bağlan**'a bas. Listeden **USB Serial / CH340** olanı seç. "İletişim Bağlantı Noktası (COM1)" kablo değildir.
+3. **2. Telsizden oku**'ya bas. Sonra **Yedeği indir** ile 8 KB yedeği sakla.
+4. Ayarları değiştir ya da **FAVORI kanalları**na kendi rölelerini ekle (elle ya da CSV ile).
+5. **Değişiklikler** kutusundaki listeyi kontrol et, **Değişiklikleri telsize yaz** ve **Onayla ve yaz**'a bas.
+6. Telsiz yeniden başlar. Ekran boş kalırsa kabloyu çıkar, telsizi kapatıp aç.
+
+**Neler değiştirilebilir:** squelch, Eko, arka ışık, tuş sesi, otomatik kilit, TX süre sınırı, mikrofon,
+FM arka plan izleme, OZEL aralık, TX izinleri ve FAVORI kanalları (ad, frekans, kaydırma, ton, güç, bant).
+
+**CSV biçimi** (Excel'de açılabilir, `;` ile ayrılır):
+```
+ad;alma_mhz;kaydirma_mhz;gonderme_tonu;alma_tonu;guc;bant;mod
+ROLE ADI;145.67500;-0.6;88.5;;Yüksek;Geniş;FM
+ROLE UHF;439.20000;-7.6;88.5;;Yüksek;Geniş;FM
+```
+Kaydırma röle için VHF'de genelde -0.6, UHF'de -7.6 MHz. Ton CTCSS (ör. 88.5) ya da DCS (ör. D023N), boşsa ton yok.
+
+**Güvenlik:** Sabit kanallara (PMR, Deniz, CB…) ve kalibrasyona yazmaz. Yazmadan önce otomatik yedek indirir,
+yazdıktan sonra geri okuyup kontrol eder. Telsiz olmadan bir yedek dosyasını **Dosyadan aç** ile inceleyebilirsin.
+
+Araç dosyası: [`docs/index.html`](docs/index.html). İnternetsiz kullanmak için indirip Chrome'a sürükleyebilirsin.
 
 ## Kaynaktan derleme
 
