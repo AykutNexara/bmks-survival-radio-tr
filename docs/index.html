@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BMKs Survival Radio – Ayar Aracı</title>
+<style>
+  :root { --bg:#0f1115; --panel:#171a21; --line:#2a2f3a; --text:#e6e8ec; --dim:#9aa3b2; --accent:#f29a2e; --ok:#3fb950; --bad:#f85149; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background:var(--bg); color:var(--text); }
+  header { padding:18px 24px; border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+  header h1 { font-size:20px; margin:0 16px 0 0; }
+  header h1 span { color:var(--accent); }
+  button, .filebtn { background:#232834; color:var(--text); border:1px solid var(--line); border-radius:8px; padding:8px 14px; font-size:14px; cursor:pointer; }
+  button:hover, .filebtn:hover { border-color:var(--accent); }
+  button.primary { background:var(--accent); color:#111; border-color:var(--accent); font-weight:600; }
+  button:disabled { opacity:.45; cursor:default; }
+  .filebtn input { display:none; }
+  main { max-width:1150px; margin:0 auto; padding:20px 24px 60px; }
+  .note { background:#1d1a12; border:1px solid #5a4316; border-radius:10px; padding:12px 16px; margin-bottom:18px; color:#f3d9a8; }
+  .note b { color:#ffd27a; }
+  #status { color:var(--dim); margin:0 0 16px; min-height:22px; }
+  #status.ok { color:var(--ok); } #status.bad { color:var(--bad); }
+  progress { width:100%; height:8px; display:none; margin-bottom:16px; }
+  section { background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px 18px; margin-bottom:18px; }
+  section h2 { font-size:16px; margin:0 0 12px; color:var(--accent); }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:10px 18px; }
+  .kv { display:flex; justify-content:space-between; gap:12px; border-bottom:1px dashed var(--line); padding:4px 0; }
+  .kv span:first-child { color:var(--dim); }
+  .tags span { display:inline-block; padding:3px 10px; border-radius:20px; margin:0 6px 6px 0; font-size:13px; border:1px solid var(--line); }
+  .tags .on { background:#13311d; border-color:#2f6b3d; color:#8fe0a0; }
+  .tags .off { color:var(--dim); }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  th, td { text-align:left; padding:5px 8px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { color:var(--dim); font-weight:500; position:sticky; top:0; background:var(--panel); }
+  td.num { font-variant-numeric:tabular-nums; }
+  .tablewrap { max-height:520px; overflow:auto; }
+  .filters { margin-bottom:10px; display:flex; flex-wrap:wrap; gap:6px; }
+  .filters button { padding:4px 10px; font-size:13px; }
+  .filters button.sel { border-color:var(--accent); color:var(--accent); }
+  .empty { color:var(--dim); }
+  .prio { color:var(--accent); font-weight:600; }
+  #content { display:none; }
+  select, input[type=number] { background:#0f1115; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:3px 6px; font-size:14px; max-width:180px; }
+  input[type=number] { width:120px; }
+  .tags label { display:inline-block; padding:3px 10px; border-radius:20px; margin:0 6px 6px 0; font-size:13px; border:1px solid var(--line); cursor:pointer; }
+  .tags label.on { background:#13311d; border-color:#2f6b3d; color:#8fe0a0; }
+  .tags label.off { color:var(--dim); }
+  .kv { align-items:center; }
+  #favtable input[type=text] { background:#0f1115; color:var(--text); border:1px solid var(--line); border-radius:6px; padding:3px 6px; font-size:13.5px; }
+  #favtable select { font-size:13px; padding:2px 4px; }
+  #favtable input.bad { border-color:var(--bad); background:#2a1414; }
+  #favtable button { padding:2px 8px; font-size:13px; }
+  footer { color:var(--dim); font-size:12.5px; margin-top:30px; }
+  footer a { color:var(--dim); }
+</style>
+</head>
+<body>
+<header>
+  <h1>BMKs Survival Radio <span>Ayar Aracı</span></h1>
+  <button id="btnConnect" class="primary">1. Bağlan</button>
+  <button id="btnRead" disabled>2. Telsizden oku</button>
+  <button id="btnSave" disabled>Yedeği indir (.bin)</button>
+  <label class="filebtn">Dosyadan aç (.bin)<input type="file" id="fileOpen" accept=".bin"></label>
+</header>
+<main>
+  <div class="note">
+    <b>Ne yapar:</b> Telsizden okur. Genel ayarları, TX izinlerini ve FAVORI kanallarını (kendi rölelerin) değiştirip telsize geri yazar.
+    Sabit kanallara (PMR, Deniz, CB…) ve kalibrasyona hiç dokunmaz. Yazmadan önce otomatik yedek indirir.<br>
+    <b>Gerekenler:</b> Chrome ya da Edge, K tipi USB programlama kablosu, BMKs Survival Radio firmware'i.<br>
+    <b>Sıra önemli:</b> Önce telsizi normal aç (PTT'ye basmadan), sonra kabloyu tak.
+    Bağlanırken listeden <b>USB Serial / CH340</b> olanı seç. "İletişim Bağlantı Noktası (COM1)" kablo değildir.
+  </div>
+  <p id="status">Bağlı değil.</p>
+  <progress id="progress" max="64" value="0"></progress>
+
+  <div id="content">
+    <section>
+      <h2>Genel</h2>
+      <div class="grid" id="general"></div>
+    </section>
+    <section>
+      <h2>Gönderme (TX) izinleri</h2>
+      <div class="tags" id="txmask"></div>
+      <div class="empty" style="font-size:13px">Hava bandı, FM yayın bandı, askeri hava bandı, 406 MHz ve deniz kanal 70 her zaman yasaktır.</div>
+    </section>
+    <section>
+      <h2>FAVORI kanalları <span class="empty" style="font-size:13px;font-weight:400">(düzenlenebilir: kendi röle ve frekansların)</span></h2>
+      <div class="filters">
+        <button id="btnFavAdd">+ Kanal ekle</button>
+        <label class="filebtn" style="padding:4px 10px;font-size:13px">CSV içe aktar<input type="file" id="favImport" accept=".csv,.txt"></label>
+        <button id="btnFavExport">CSV dışa aktar</button>
+        <span class="empty" id="favCount" style="font-size:13px;align-self:center"></span>
+      </div>
+      <div class="tablewrap"><table id="favtable"></table></div>
+      <div class="empty" style="font-size:12.5px;margin-top:8px">
+        Kaydırma röle için: VHF genelde <b>-0.6</b>, UHF genelde <b>-7.6</b> MHz. Ton: CTCSS (ör. <b>88.5</b>) ya da DCS (ör. <b>D023N</b>), boşsa ton yok.
+        Gönderme tonu röleyi açar; alma tonunu boş bırakırsan her sesi duyarsın.
+        CSV sütunları: <code>ad;alma_mhz;kaydirma_mhz;gonderme_tonu;alma_tonu;guc;bant;mod</code>
+      </div>
+    </section>
+    <section id="writeSection">
+      <h2>Değişiklikler</h2>
+      <div id="plan"></div>
+      <div style="margin-top:12px"><button id="btnWrite" class="primary" disabled>Değişiklikleri telsize yaz</button></div>
+      <div id="confirmBox" class="note" style="display:none;margin:12px 0 0">
+        <b>Emin misin?</b> Önce şu anki ayarların yedeği bilgisayarına inecek. Sonra değişiklikler yazılacak,
+        geri okunup kontrol edilecek ve telsiz yeniden başlayacak. Bu sırada kabloyu çıkarma.<br><br>
+        <button id="btnConfirm" class="primary">Onayla ve yaz</button> <button id="btnCancel">Vazgeç</button>
+      </div>
+    </section>
+    <section>
+      <h2>Tüm kanallar <span class="empty" style="font-size:13px;font-weight:400">(sadece görüntüleme)</span></h2>
+      <div class="filters" id="filters"></div>
+      <div class="tablewrap"><table id="channels"></table></div>
+    </section>
+    <section>
+      <h2>Atlama listesi</h2>
+      <div id="skip"></div>
+    </section>
+    <section>
+      <h2>Kayıtlı FM istasyonları</h2>
+      <div id="fm"></div>
+    </section>
+  </div>
+
+  <footer>
+    Türkçe sürüm: <a href="https://github.com/AykutNexara/bmks-survival-radio-tr">AykutNexara/bmks-survival-radio-tr</a> ·
+    Orijinal proje: <a href="https://github.com/melihkarakelle/bmks-survival-radio">melihkarakelle/bmks-survival-radio</a> ·
+    Garanti yoktur, kullanım riski size aittir.
+  </footer>
+</main>
+
+<script id="core">
+// ---------------------------------------------------------------- protocol (UV-K5 / F4HWN serial, 38400 8N1)
+const XOR_KEY = [0x16,0x6C,0x14,0xE6,0x2E,0x91,0x0D,0x40,0x21,0x35,0xD5,0x40,0x13,0x03,0xE9,0x80];
+const TIMESTAMP = 0x6457396A;
+const EEPROM_SIZE = 0x2000;
+
+function crc16xmodem(bytes) {
+  let crc = 0;
+  for (const b of bytes) {
+    crc ^= b << 8;
+    for (let i = 0; i < 8; i++) crc = (crc & 0x8000) ? ((crc << 1) ^ 0x1021) & 0xFFFF : (crc << 1) & 0xFFFF;
+  }
+  return crc;
+}
+function xorBytes(bytes) { return bytes.map((b, i) => b ^ XOR_KEY[i % 16]); }
+function u16(v) { return [v & 0xFF, (v >> 8) & 0xFF]; }
+function u32(v) { return [v & 0xFF, (v >>> 8) & 0xFF, (v >>> 16) & 0xFF, (v >>> 24) & 0xFF]; }
+
+function buildFrame(cmd, data) {
+  const payload = [...u16(cmd), ...u16(data.length), ...data];
+  const body = [...payload, ...u16(crc16xmodem(payload))];
+  return Uint8Array.from([0xAB, 0xCD, ...u16(payload.length), ...xorBytes(body), 0xDC, 0xBA]);
+}
+// returns {frame:{cmd,data}, rest} or null when more bytes are needed
+function parseFrame(buf) {
+  let start = -1;
+  for (let i = 0; i + 1 < buf.length; i++) if (buf[i] === 0xAB && buf[i + 1] === 0xCD) { start = i; break; }
+  if (start < 0) return null;
+  if (buf.length < start + 4) return null;
+  const n = buf[start + 2] | (buf[start + 3] << 8);
+  const end = start + 4 + n + 4;
+  if (buf.length < end) return null;
+  const body = xorBytes(Array.from(buf.slice(start + 4, start + 4 + n + 2)));
+  const payload = body.slice(0, n);
+  const cmd = payload[0] | (payload[1] << 8);
+  const dlen = payload[2] | (payload[3] << 8);
+  return { frame: { cmd, data: payload.slice(4, 4 + dlen) }, rest: buf.slice(end) };
+}
+const cmdHello = () => buildFrame(0x0514, u32(TIMESTAMP));
+const cmdRead = (addr, len) => buildFrame(0x051B, [...u16(addr), len, 0, ...u32(TIMESTAMP)]);
+
+// ---------------------------------------------------------------- EEPROM layout (BMKs Survival v6.x, F4HWN base)
+// table version 6: original v6.x (with FRS); 7: Turkish edition (FRS removed)
+const LAYOUTS = {
+  6: { groups: [["PMR446", 16], ["FRS", 22], ["DENIZ", 59], ["AMATOR", 5], ["CB", 40]],
+       fmScan: ["Kapalı", "PMR446", "FRS", "Deniz", "Hava", "Amatör", "CB", "Son kullanılan grup"], txBits: [0, 1, 2, 3, 4, 5] },
+  7: { groups: [["PMR446", 16], ["DENIZ", 59], ["AMATOR", 5], ["CB", 40]],
+       fmScan: ["Kapalı", "PMR446", "Deniz", "Hava", "Amatör", "CB", "Son kullanılan grup"], txBits: [0, 2, 3, 4, 5] },
+};
+function layoutFor(version) {
+  const L = LAYOUTS[version] || LAYOUTS[7];
+  const groups = []; let first = 0;
+  for (const [name, count] of L.groups) { groups.push({ name, first, count }); first += count; }
+  groups.push({ name: "FAVORI", first, count: 200 - first });
+  return { groups, favFirst: first, fmScan: L.fmScan, txBits: L.txBits, known: version in LAYOUTS };
+}
+let GROUPS = layoutFor(7).groups;
+const CTCSS = [670,693,719,744,770,797,825,854,885,915,948,974,1000,1035,1072,1109,1148,1188,1230,1273,1318,1365,1413,1462,1514,1567,1598,1622,1655,1679,1713,1738,1773,1799,1835,1862,1899,1928,1966,1995,2035,2065,2107,2181,2257,2291,2336,2418,2503,2541];
+const DCS = [0x013,0x015,0x016,0x019,0x01A,0x01E,0x023,0x027,0x029,0x02B,0x02C,0x035,0x039,0x03A,0x03B,0x03C,0x04C,0x04D,0x04E,0x052,0x055,0x059,0x05A,0x05C,0x063,0x065,0x06A,0x06D,0x06E,0x072,0x075,0x07A,0x07C,0x085,0x08A,0x093,0x095,0x096,0x0A3,0x0A4,0x0A5,0x0A6,0x0A9,0x0AA,0x0AD,0x0B1,0x0B3,0x0B5,0x0B6,0x0B9,0x0BC,0x0C6,0x0C9,0x0CD,0x0D5,0x0D9,0x0DA,0x0E3,0x0E6,0x0E9,0x0EE,0x0F4,0x0F5,0x0F9,0x109,0x10A,0x10B,0x113,0x119,0x11A,0x125,0x126,0x12A,0x12C,0x12D,0x132,0x134,0x135,0x136,0x143,0x146,0x14E,0x153,0x156,0x15A,0x166,0x175,0x186,0x18A,0x194,0x197,0x199,0x19A,0x1AC,0x1B2,0x1B4,0x1C3,0x1CA,0x1D3,0x1D9,0x1DA,0x1DC,0x1E3,0x1EC];
+const POWER = ["Özel", "Düşük 1", "Düşük 2", "Düşük 3", "Düşük 4", "Düşük 5", "Orta", "Yüksek"];
+const MODULATION = ["FM", "AM", "USB"];
+const TX_BITS = ["PMR", "FRS", "Deniz", "Amatör", "CB", "Tüm bantlar (TxHep)"];
+const MIC = ["+1.5 dB", "+4.0 dB", "+8.0 dB", "+12.0 dB", "+15.5 dB"];   // gMicGain_dB2 {3,8,16,24,31} / 2, as the radio menu shows it
+
+const rd32 = (e, a) => (e[a] | (e[a+1] << 8) | (e[a+2] << 16) | (e[a+3] << 24)) >>> 0;
+const rd16 = (e, a) => e[a] | (e[a+1] << 8);
+const mhz = (f10hz, digits = 5) => (f10hz / 100000).toFixed(digits);
+function seconds(s) { return s >= 60 ? `${Math.floor(s / 60)} dk ${s % 60 ? (s % 60) + " sn" : ""}`.trim() : `${s} sn`; }
+
+function groupOf(ch, groups = GROUPS) {
+  for (const g of groups) if (ch >= g.first && ch < g.first + g.count) return g.name;
+  return "?";
+}
+function toneText(type, code) {   // "88.5", "D023N", "" - the form used in the editor and CSV
+  if (type === 1 && code < CTCSS.length) return (CTCSS[code] / 10).toFixed(1);
+  if ((type === 2 || type === 3) && code < DCS.length) return "D" + DCS[code].toString(8).padStart(3, "0") + (type === 2 ? "N" : "I");
+  return "";
+}
+function parseTone(t) {   // -> [type, code]; throws on a value the radio does not have
+  t = String(t || "").trim().toUpperCase().replace(",", ".").replace(/\s*HZ$/, "");
+  if (!t || t === "-" || t === "YOK") return [0, 0];
+  const d = t.match(/^D?(\d{3})([NI]?)$/);
+  if (d && t.startsWith("D")) {
+    const i = DCS.indexOf(parseInt(d[1], 8));
+    if (i < 0) throw new Error(`DCS kodu yok: ${t}`);
+    return [d[2] === "I" ? 3 : 2, i];
+  }
+  const v = Math.round(parseFloat(t) * 10);
+  const i = CTCSS.indexOf(v);
+  if (!Number.isFinite(v) || i < 0) throw new Error(`CTCSS tonu yok: ${t}`);
+  return [1, i];
+}
+function codeText(type, code) {
+  if (type === 1 && code < CTCSS.length) return (CTCSS[code] / 10).toFixed(1) + " Hz";
+  if ((type === 2 || type === 3) && code < DCS.length) return "D" + DCS[code].toString(8).padStart(3, "0") + (type === 2 ? "N" : "I");
+  return "";
+}
+
+function decodeChannel(e, ch, groups = GROUPS) {
+  const att = e[0x0D60 + ch];
+  const band = att & 7;
+  if (band > 6) return null;   // empty slot
+  const a = ch * 16;
+  const freq = rd32(e, a), offset = rd32(e, a + 4);
+  if (freq === 0xFFFFFFFF || freq === 0) return null;
+  const codeTypes = e[a + 10], modDir = e[a + 11], flags = e[a + 12];
+  let name = "";
+  for (let i = 0; i < 10; i++) {
+    const c = e[0x0F50 + ch * 16 + i];
+    if (c === 0 || c === 0xFF) break;
+    name += String.fromCharCode(c);
+  }
+  const dir = modDir & 0x0F;
+  return {
+    ch, group: groupOf(ch, groups), name: name.trim(), freq, offset, dir,
+    mod: modDir >> 4, powerIdx: (flags >> 2) & 7,
+    txTone: toneText(codeTypes >> 4, e[a + 9]), rxTone: toneText(codeTypes & 0x0F, e[a + 8]),
+    tx: dir === 1 ? freq + offset : dir === 2 ? freq - offset : freq,
+    modulation: MODULATION[modDir >> 4] || "?",
+    narrow: !!(flags & 0x02),
+    power: POWER[(flags >> 2) & 7] || "?",
+    rxCode: codeText(codeTypes & 0x0F, e[a + 8]),
+    txCode: codeText(codeTypes >> 4, e[a + 9]),
+    prio: !!(att & 0x20),
+  };
+}
+
+function decodeEeprom(e) {
+  const marker = e.slice(0x1FF8, 0x2000);
+  const isSurvival = String.fromCharCode(...marker.slice(0, 4)) === "BMKS";
+  const layout = layoutFor(marker[4]);
+  const s = {
+    isSurvival, layout,
+    tableVersion: marker[4],
+    txMask: marker[5],
+    fmScan: marker[6],
+    customStart: rd32(e, 0x1FE8),
+    customEnd: rd32(e, 0x1FEC),
+    squelch: e[0x0E71],
+    tot: e[0x0E72],
+    mic: e[0x0E77],
+    batterySave: e[0x0E7B],
+    backlight: e[0x0E7D],
+    beep: e[0x0E90] & 1,
+    autoLock: e[0x0E96],
+    channels: [],
+    skip: [],
+    fm: [],
+  };
+  for (let ch = 0; ch < 200; ch++) { const c = decodeChannel(e, ch, layout.groups); if (c) s.channels.push(c); }
+  s.fav = s.channels.filter(c => c.ch >= layout.favFirst);
+  for (let i = 0; i < 16; i++) {
+    const f = rd32(e, 0x1C00 + i * 4);
+    if (f === 0 || f === 0xFFFFFFFF) break;
+    s.skip.push(f);
+  }
+  for (let i = 0; i < 20; i++) {
+    const f = rd16(e, 0x0E40 + i * 2);
+    if (f !== 0xFFFF && f >= 640 && f <= 1080) s.fm.push({ slot: i + 1, mhz: f / 10 });
+  }
+  return s;
+}
+
+// ---------------------------------------------------------------- writing
+const cmdWrite = (addr, bytes) => buildFrame(0x051D, [...u16(addr), bytes.length, 1, ...u32(TIMESTAMP), ...bytes]);
+const cmdReset = () => buildFrame(0x05DD, []);
+
+// settings: whole 8-byte blocks this tool may write (the calibration 0x1E00-0x1FE7 never)
+const WRITABLE_BLOCKS = {
+  0x0E70: "squelch, TX süre sınırı, mikrofon",
+  0x0E78: "Eko, arka ışık",
+  0x0E90: "tuş sesi, otomatik kilit",
+  0x1FE8: "OZEL aralık",
+  0x1FF8: "TX izinleri, FM arka plan izleme",
+};
+const BACKLIGHT_ECO_LEVEL = 5;
+// FAVORI channels: the only channel bytes this tool may change (data, name, attribute byte)
+function favRanges(layout) {
+  const r = [];
+  for (let ch = layout.favFirst; ch < 200; ch++) r.push([ch * 16, ch * 16 + 16], [0x0F50 + ch * 16, 0x0F50 + ch * 16 + 16], [0x0D60 + ch, 0x0D61 + ch]);
+  return r;
+}
+const BAND_LOWER = [1800000, 10800000, 13700000, 17400000, 35000000, 40000000, 47000000];   // BAND1..BAND7, ENABLE_WIDE_RX
+function bandOf(f) { for (let b = 6; b >= 0; b--) if (f >= BAND_LOWER[b]) return b; return -1; }
+function validFreq(f) { return Number.isInteger(f) && f >= 1800000 && f <= 130000000 && !(f >= 63000000 && f < 84000000); }
+const TR_MAP = { "Ç": "C", "Ğ": "G", "İ": "I", "I": "I", "Ö": "O", "Ş": "S", "Ü": "U", "ç": "C", "ğ": "G", "ı": "I", "i": "I", "ö": "O", "ş": "S", "ü": "U" };
+function asciiName(n) { return String(n || "").replace(/[ÇĞİÖŞÜçğıiöşü]/g, c => TR_MAP[c]).toUpperCase().replace(/[^ -~]/g, "").slice(0, 10); }
+
+// c: {name, freq, dir 0/1/2, offset, txTone, rxTone, powerIdx, narrow, mod, prio}; units 10 Hz
+function encodeChannel(e, ch, c) {
+  const a = ch * 16;
+  if (!validFreq(c.freq)) throw new Error(`Kanal ${ch + 1}: alma frekansı geçersiz`);
+  const tx = c.dir === 1 ? c.freq + c.offset : c.dir === 2 ? c.freq - c.offset : c.freq;
+  if (c.dir && (!Number.isInteger(c.offset) || c.offset <= 0 || !validFreq(tx))) throw new Error(`Kanal ${ch + 1}: kaydırma geçersiz`);
+  const [txT, txC] = parseTone(c.txTone), [rxT, rxC] = parseTone(c.rxTone);
+  const wasEmpty = (e[0x0D60 + ch] & 7) > 6 || rd32(e, a) === 0xFFFFFFFF;
+  if (wasEmpty) { e.fill(0, a, a + 16); e[a + 14] = 4; }   // new channel: 12.5 kHz step
+  wr32(e, a, c.freq);
+  wr32(e, a + 4, c.dir ? c.offset : 0);
+  e[a + 8] = rxC; e[a + 9] = txC; e[a + 10] = (txT << 4) | rxT;
+  e[a + 11] = ((c.mod & 0x0F) << 4) | (c.dir & 0x0F);
+  e[a + 12] = (e[a + 12] & 0x61) | ((c.powerIdx & 7) << 2) | (c.narrow ? 2 : 0);
+  const name = asciiName(c.name);
+  for (let i = 0; i < 16; i++) e[0x0F50 + ch * 16 + i] = i < name.length ? name.charCodeAt(i) : 0;
+  e[0x0D60 + ch] = bandOf(c.freq) | (c.prio ? 0x20 : 0);
+}
+function clearChannel(e, ch) {   // same as the firmware: the attribute marks the slot empty
+  e.fill(0xFF, ch * 16, ch * 16 + 16);
+  e.fill(0, 0x0F50 + ch * 16, 0x0F50 + ch * 16 + 16);
+  e[0x0D60 + ch] = 0x07;
+}
+const wr32 = (e, a, v) => { e[a] = v & 255; e[a+1] = (v >>> 8) & 255; e[a+2] = (v >>> 16) & 255; e[a+3] = (v >>> 24) & 255; };
+
+// edits: the editable fields of decodeEeprom(); returns a new image, the input is left as is
+function applyEdits(orig, ed) {
+  const e = new Uint8Array(orig);
+  const cur = decodeEeprom(orig);
+  if (!cur.isSurvival) throw new Error("BMKs Survival işareti yok, yazma iptal");
+  const int = (v, lo, hi, what) => { v = Number(v); if (!Number.isInteger(v) || v < lo || v > hi) throw new Error(`${what}: geçersiz değer`); return v; };
+  e[0x0E71] = int(ed.squelch, 0, 9, "Squelch");
+  e[0x0E72] = int(ed.tot, 5, 179, "TX süre sınırı");
+  e[0x0E77] = int(ed.mic, 0, 4, "Mikrofon");
+  if ((ed.batterySave === 5) !== (cur.batterySave === 5)) {
+    // same as SURVIVAL_SetEco() on the radio
+    const on = ed.batterySave === 5;
+    e[0x0E7B] = on ? 5 : 4;
+    e[0x0E7D] = on ? 2 : 12;
+    let max = on ? BACKLIGHT_ECO_LEVEL : 10, min = e[0x0E78] >> 4;
+    if (min >= max) min = 0;
+    e[0x0E78] = (min << 4) | max;
+  }
+  if (ed.backlight !== cur.backlight) e[0x0E7D] = int(ed.backlight, 0, 61, "Arka ışık");
+  e[0x0E90] = (e[0x0E90] & 0xFE) | (ed.beep ? 1 : 0);
+  e[0x0E96] = int(ed.autoLock, 0, 40, "Otomatik kilit");
+  e[0x1FFD] = int(ed.txMask, 0, 63, "TX izinleri");
+  e[0x1FFE] = int(ed.fmScan, 0, cur.layout.fmScan.length - 1, "FM arka plan izleme");
+  const lo = 1800000, hi = 130000000;
+  const a = int(ed.customStart, lo, hi, "OZEL başlangıç"), b = int(ed.customEnd, lo, hi, "OZEL bitiş");
+  if (a >= b) throw new Error("OZEL aralık: başlangıç bitişten küçük olmalı");
+  wr32(e, 0x1FE8, a); wr32(e, 0x1FEC, b);
+  if (ed.fav) {
+    const L = cur.layout;
+    if (!L.known) throw new Error("Bu tablo sürümü tanınmıyor, kanallar yazılmaz");
+    if (ed.fav.length > 200 - L.favFirst) throw new Error(`En fazla ${200 - L.favFirst} FAVORI kanal olabilir`);
+    // the list is kept packed from the first FAVORI slot; slots whose content stays the same are not touched
+    for (let i = 0; i < 200 - L.favFirst; i++) {
+      const ch = L.favFirst + i;
+      if (i < ed.fav.length) encodeChannel(e, ch, ed.fav[i]);
+      else if ((e[0x0D60 + ch] & 7) <= 6) clearChannel(e, ch);
+    }
+    // keep bytes of untouched empty slots as they were
+    for (let i = ed.fav.length; i < 200 - L.favFirst; i++) {
+      const ch = L.favFirst + i;
+      if ((orig[0x0D60 + ch] & 7) > 6) for (const [x, y] of [[ch * 16, ch * 16 + 16], [0x0F50 + ch * 16, 0x0F50 + ch * 16 + 16], [0x0D60 + ch, 0x0D61 + ch]]) for (let k = x; k < y; k++) e[k] = orig[k];
+    }
+  }
+  return e;
+}
+// 8-byte blocks to write; throws if a changed byte is neither in a settings block nor in a FAVORI channel
+function changedBlocks(a, b) {
+  const L = decodeEeprom(a).layout, fav = favRanges(L);
+  const out = new Set();
+  for (let i = 0; i < EEPROM_SIZE; i++) {
+    if (a[i] === b[i]) continue;
+    const blk = i & ~7;
+    const ok = (blk in WRITABLE_BLOCKS) || (L.known && fav.some(([x, y]) => i >= x && i < y));
+    if (!ok || (i >= 0x1E00 && i < 0x1FE8)) throw new Error(`izinsiz adres 0x${i.toString(16)}, yazma iptal`);
+    out.add(blk);
+  }
+  return [...out].sort((x, y) => x - y);
+}
+function blockLabel(addr, L) {
+  if (addr in WRITABLE_BLOCKS) return WRITABLE_BLOCKS[addr];
+  return "FAVORI kanalları";
+}
+
+if (typeof module !== "undefined") module.exports = { buildFrame, parseFrame, cmdHello, cmdRead, cmdWrite, cmdReset, decodeEeprom, applyEdits, changedBlocks, crc16xmodem, layoutFor, parseTone, toneText, encodeChannel, WRITABLE_BLOCKS, asciiName };
+</script>
+
+<script>
+// ---------------------------------------------------------------- serial I/O
+let eepromFromRadio = false;
+let port = null, reader = null, writer = null, pendingRead = null, rxBuf = new Uint8Array(0), eeprom = null, firmware = "";
+const $ = id => document.getElementById(id);
+
+function setStatus(text, cls = "") { $("status").textContent = text; $("status").className = cls; }
+
+async function readFrame(timeoutMs = 1500) {
+  const deadline = Date.now() + timeoutMs;
+  for (;;) {
+    const p = parseFrame(rxBuf);
+    if (p) { rxBuf = p.rest; return p.frame; }
+    const left = deadline - Date.now();
+    if (left <= 0) throw new Error("Telsiz cevap vermedi");
+    // keep one read pending across timeouts: a second reader.read() would queue behind it and its data would be lost
+    if (!pendingRead) pendingRead = reader.read();
+    const chunk = await Promise.race([pendingRead, new Promise(r => setTimeout(() => r({ timeout: true }), left))]);
+    if (chunk.timeout) throw new Error("Telsiz cevap vermedi");
+    pendingRead = null;
+    if (chunk.done) throw new Error("Bağlantı kapandı");
+    const merged = new Uint8Array(rxBuf.length + chunk.value.length);
+    merged.set(rxBuf); merged.set(chunk.value, rxBuf.length); rxBuf = merged;
+  }
+}
+async function request(frame, wantCmd, tries = 3) {
+  for (let t = 1; t <= tries; t++) {
+    rxBuf = new Uint8Array(0);
+    await writer.write(frame);
+    try {
+      for (;;) { const f = await readFrame(); if (f.cmd === wantCmd) return f.data; }
+    } catch (err) { if (t === tries) throw err; }
+  }
+}
+
+$("btnConnect").onclick = async () => {
+  if (!("serial" in navigator)) { setStatus("Bu tarayıcı seri bağlantıyı desteklemiyor. Chrome ya da Edge kullanın.", "bad"); return; }
+  try {
+    if (port) { try { reader.releaseLock(); writer.releaseLock(); await port.close(); } catch (_) {} }
+    port = await navigator.serial.requestPort();
+    await port.open({ baudRate: 38400 });
+    reader = port.readable.getReader();
+    pendingRead = null;
+    writer = port.writable.getWriter();
+    setStatus("Bağlanıldı. Telsiz kontrol ediliyor…");
+    const v = await request(cmdHello(), 0x0515);
+    firmware = String.fromCharCode(...v.slice(0, 16)).replace(/\0.*$/s, "");
+    setStatus(`Telsiz cevap verdi: ${firmware}. Şimdi "Telsizden oku" düğmesine bas.`, "ok");
+    $("btnRead").disabled = false;
+  } catch (err) {
+    setStatus(`Bağlanılamadı: ${err.message}. Telsiz normal açık mı, kablo tam takılı mı, doğru COM seçildi mi?`, "bad");
+  }
+};
+
+$("btnRead").onclick = async () => {
+  $("btnRead").disabled = true;
+  const bar = $("progress"); bar.style.display = "block"; bar.value = 0;
+  const e = new Uint8Array(EEPROM_SIZE);
+  try {
+    await request(cmdHello(), 0x0515);
+    for (let addr = 0, i = 0; addr < EEPROM_SIZE; addr += 0x80, i++) {
+      const d = await request(cmdRead(addr, 0x80), 0x051C);
+      const got = d[0] | (d[1] << 8);
+      if (got !== addr) throw new Error(`adres uyuşmadı (${addr.toString(16)})`);
+      e.set(d.slice(4, 4 + 0x80), addr);
+      bar.value = i + 1;
+    }
+    eepromFromRadio = true;
+    setStatus("Okuma tamam (8 KB). Önce yedeği indirmeni öneririm.", "ok");
+    $("btnSave").disabled = false;
+    setEeprom(e);
+  } catch (err) {
+    setStatus(`Okuma yarıda kaldı: ${err.message}. Tekrar dene.`, "bad");
+  } finally {
+    $("btnRead").disabled = false;
+    bar.style.display = "none";
+  }
+};
+
+function downloadImage(img, suffix = "") {
+  const d = new Date(), p = n => String(n).padStart(2, "0");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([img], { type: "application/octet-stream" }));
+  a.download = `bmks_eeprom_${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}${suffix}.bin`;
+  a.click();
+}
+$("btnSave").onclick = () => { if (eeprom) downloadImage(eeprom); };
+
+$("btnWrite").onclick = () => { if (planned) $("confirmBox").style.display = "block"; };
+$("btnCancel").onclick = () => { $("confirmBox").style.display = "none"; };
+$("btnConfirm").onclick = async () => {
+  if (!planned || !eepromFromRadio) return;
+  const { img, blocks } = planned;
+  $("confirmBox").style.display = "none";
+  $("btnWrite").disabled = $("btnRead").disabled = true;
+  try {
+    downloadImage(eeprom, "_yazmadan_once");
+    await request(cmdHello(), 0x0515);
+    const allowed = changedBlocks(eeprom, img);   // checks every changed byte again
+    for (const [n, addr] of blocks.entries()) {
+      if (!allowed.includes(addr)) throw new Error("izinsiz adres");
+      setStatus(`Yazılıyor (${n + 1}/${blocks.length}): ${blockLabel(addr)}…`);
+      const r = await request(cmdWrite(addr, Array.from(img.slice(addr, addr + 8))), 0x051E);
+      if ((r[0] | (r[1] << 8)) !== addr) throw new Error(`yazma cevabı uyuşmadı (0x${addr.toString(16)})`);
+    }
+    setStatus("Kontrol ediliyor…");
+    for (const addr of blocks) {
+      const d = await request(cmdRead(addr, 8), 0x051C);
+      for (let i = 0; i < 8; i++) if (d[4 + i] !== img[addr + i]) throw new Error(`kontrol tutmadı (0x${addr.toString(16)})`);
+    }
+    await writer.write(cmdReset());
+    eepromFromRadio = false; planned = null;
+    setEeprom(img);
+    setStatus('Yazıldı ve kontrol edildi. Telsiz yeniden başlıyor. Ekran boş kalırsa (kablo takılıyken bazı telsizler yükleme moduna girer) kabloyu çıkar, telsizi kapatıp aç. Sonra "Telsizden oku" ile son hali görebilirsin.', "ok");
+  } catch (err) {
+    setStatus(`Yazma hatası: ${err.message}. Yedek bilgisayarına indi. Telsizi kapatıp aç, sonra tekrar oku.`, "bad");
+  } finally {
+    $("btnRead").disabled = false;
+  }
+};
+
+$("fileOpen").onchange = async ev => {
+  const f = ev.target.files[0];
+  if (!f) return;
+  const buf = new Uint8Array(await f.arrayBuffer());
+  if (buf.length !== EEPROM_SIZE) { setStatus(`Dosya ${buf.length} bayt. 8192 baytlık bir EEPROM yedeği bekleniyordu.`, "bad"); return; }
+  firmware = ""; eepromFromRadio = false;
+  $("btnSave").disabled = false;
+  setEeprom(buf);
+  setStatus(`${f.name} dosyası açıldı.`, "ok");
+};
+
+// ---------------------------------------------------------------- display
+let channelFilter = "TUMU", lastState = null;
+
+function sel(id, options, cur) {
+  return `<select id="ed_${id}">${options.map(([v, t]) => `<option value="${v}" ${v === cur ? "selected" : ""}>${t}</option>`).join("")}</select>`;
+}
+function readEdits() {
+  const v = id => Number($("ed_" + id).value);
+  let tx = lastState.txMask;
+  for (const i of lastState.layout.txBits) tx = $("ed_tx" + i).checked ? tx | (1 << i) : tx & ~(1 << i);
+  return {
+    squelch: v("squelch"), batterySave: v("batterySave"), backlight: v("backlight"), beep: v("beep"),
+    autoLock: v("autoLock"), tot: v("tot"), mic: v("mic"), fmScan: v("fmScan"), txMask: tx,
+    customStart: Math.round(parseFloat($("ed_customStart").value) * 100000),
+    customEnd: Math.round(parseFloat($("ed_customEnd").value) * 100000),
+    fav: favList,
+  };
+}
+// list the changes and enable the write button
+let planned = null;
+function refreshPlan() {
+  planned = null;
+  $("confirmBox").style.display = "none";
+  document.querySelectorAll("#txmask label").forEach(l => l.className = l.querySelector("input").checked ? "on" : "off");
+  try {
+    if (favErrors.size) throw new Error("FAVORI tablosunda kırmızı alanları düzelt");
+    const img = applyEdits(eeprom, readEdits());
+    const blocks = changedBlocks(eeprom, img);
+    if (!blocks.length) { $("plan").innerHTML = '<span class="empty">Değişiklik yok.</span>'; $("btnWrite").disabled = true; return; }
+    const a = decodeEeprom(eeprom), b = decodeEeprom(img), lines = [];
+    const cmp = (label, x, y) => { if (x !== y) lines.push(`${label}: <b>${x}</b> → <b>${y}</b>`); };
+    cmp("Squelch", a.squelch, b.squelch);
+    cmp("Eko", a.batterySave === 5 ? "Açık" : "Kapalı", b.batterySave === 5 ? "Açık" : "Kapalı");
+    const bl = v => v === 0 ? "Kapalı" : v === 61 ? "Hep açık" : seconds(v * 5);
+    cmp("Arka ışık", bl(a.backlight), bl(b.backlight));
+    cmp("Tuş sesi", a.beep ? "Açık" : "Kapalı", b.beep ? "Açık" : "Kapalı");
+    const al = v => v === 0 ? "Kapalı" : seconds(v * 15);
+    cmp("Otomatik kilit", al(a.autoLock), al(b.autoLock));
+    cmp("TX süre sınırı", seconds((a.tot + 1) * 5), seconds((b.tot + 1) * 5));
+    cmp("Mikrofon", MIC[a.mic], MIC[b.mic]);
+    cmp("FM arka plan izleme", a.layout.fmScan[a.fmScan], a.layout.fmScan[b.fmScan]);
+    a.layout.txBits.forEach(i => cmp("TX " + TX_BITS[i], (a.txMask >> i) & 1 ? "izin" : "yasak", (b.txMask >> i) & 1 ? "izin" : "yasak"));
+    cmp("OZEL aralık", `${mhz(a.customStart, 3)}–${mhz(a.customEnd, 3)}`, `${mhz(b.customStart, 3)}–${mhz(b.customEnd, 3)}`);
+    const favKey = c => c ? `${c.name} ${mhz(c.freq)} ${c.dir ? (c.dir === 1 ? "+" : "-") + mhz(c.offset, 4) : ""} ${c.txTone ? "T" + c.txTone : ""}${c.rxTone ? " R" + c.rxTone : ""} ${POWER[c.powerIdx]} ${c.narrow ? "Dar" : "Geniş"} ${MODULATION[c.mod]}`.replace(/\s+/g, " ").trim() : "";
+    const n = Math.max(a.fav.length, b.fav.length), favLines = [];
+    const byCh = (list, ch) => list.find(c => c.ch === ch);
+    for (let ch = a.layout.favFirst; ch < 200; ch++) {
+      const x = favKey(byCh(a.fav, ch)), y = favKey(byCh(b.fav, ch));
+      if (x === y) continue;
+      favLines.push(`Kanal ${ch + 1}: ${x ? `<b>${x}</b>` : "boş"} → ${y ? `<b>${y}</b>` : "boş (silinecek)"}`);
+    }
+    if (favLines.length) lines.push(`<div style="margin-top:6px">FAVORI kanalları (${favLines.length} değişiklik):</div>` + favLines.map(l => `<div style="font-size:13px;margin-left:12px">${l}</div>`).join(""));
+    $("plan").innerHTML = lines.map(l => `<div>${l}</div>`).join("") +
+      `<div class="empty" style="font-size:13px;margin-top:6px">Yazılacak bölümler: ${[...new Set(blocks.map(x => blockLabel(x)))].join(" · ")}</div>`;
+    planned = { img, blocks };
+    $("btnWrite").disabled = !(eepromFromRadio && writer);
+    if (!eepromFromRadio) $("plan").innerHTML += '<div class="empty" style="font-size:13px">Yazmak için önce telsize bağlanıp "Telsizden oku" yap.</div>';
+  } catch (err) {
+    $("plan").innerHTML = `<span style="color:var(--bad)">${err.message}</span>`;
+    $("btnWrite").disabled = true;
+  }
+}
+
+// ---------------------------------------------------------------- FAVORI editor
+let favList = [], favErrors = new Set();
+function setEeprom(img) {
+  eeprom = img;
+  const s = decodeEeprom(img);
+  favList = s.fav.map(c => ({ name: c.name, freq: c.freq, dir: c.dir, offset: c.offset, txTone: c.txTone, rxTone: c.rxTone, powerIdx: c.powerIdx, narrow: c.narrow, mod: c.mod, prio: c.prio }));
+  favErrors = new Set();
+  show(s);
+}
+const POWER_ORDER = [7, 6, 5, 4, 3, 2, 1, 0];   // Yüksek first
+function renderFav() {
+  const max = 200 - lastState.layout.favFirst;
+  $("favCount").textContent = `${favList.length} / ${max} dolu · telsizde kanal ${lastState.layout.favFirst + 1}–200`;
+  $("btnFavAdd").disabled = favList.length >= max;
+  const opt = (pairs, cur) => pairs.map(([v, t]) => `<option value="${v}" ${v === cur ? "selected" : ""}>${t}</option>`).join("");
+  $("favtable").innerHTML = `<tr><th>No</th><th>Ad</th><th>Alma MHz</th><th>Kaydırma</th><th>MHz</th><th>Gönd. ton</th><th>Alma ton</th><th>Güç</th><th>Bant</th><th>Mod</th><th></th></tr>` +
+    (favList.length ? favList.map((c, i) => `<tr data-i="${i}">
+      <td class="num">${lastState.layout.favFirst + i + 1}${c.prio ? ' <span class="prio">ÖNC</span>' : ""}</td>
+      <td><input type="text" data-f="name" maxlength="10" size="10" value="${c.name.replace(/"/g, "")}"></td>
+      <td><input type="text" data-f="freq" size="9" value="${mhz(c.freq)}"></td>
+      <td><select data-f="dir">${opt([[0, "Yok"], [2, "−"], [1, "+"]], c.dir)}</select></td>
+      <td><input type="text" data-f="offset" size="6" value="${c.dir ? mhz(c.offset, 4).replace(/0+$/, "").replace(/\.$/, "") : ""}" ${c.dir ? "" : "disabled"}></td>
+      <td><input type="text" data-f="txTone" size="6" list="tones" value="${c.txTone}"></td>
+      <td><input type="text" data-f="rxTone" size="6" list="tones" value="${c.rxTone}"></td>
+      <td><select data-f="powerIdx">${opt(POWER_ORDER.map(p => [p, POWER[p]]), c.powerIdx)}</select></td>
+      <td><select data-f="narrow">${opt([[0, "Geniş"], [1, "Dar"]], c.narrow ? 1 : 0)}</select></td>
+      <td><select data-f="mod">${opt([[0, "FM"], [1, "AM"]], c.mod)}</select></td>
+      <td><button data-a="up" title="Yukarı">↑</button> <button data-a="down" title="Aşağı">↓</button> <button data-a="del" title="Sil">✕</button></td>
+    </tr>`).join("") : `<tr><td colspan="11" class="empty">FAVORI boş. "Kanal ekle" ya da "CSV içe aktar" ile ekle.</td></tr>`) +
+    `<datalist id="tones">${CTCSS.map(v => `<option value="${(v / 10).toFixed(1)}">`).join("")}</datalist>`;
+  $("favtable").querySelectorAll("tr[data-i]").forEach(tr => {
+    const i = +tr.dataset.i;
+    tr.querySelectorAll("[data-f]").forEach(el => el.onchange = () => { readFavRow(tr, i); if (el.dataset.f === "dir") renderFav(); else refreshPlan(); });
+    tr.querySelectorAll("[data-a]").forEach(b => b.onclick = () => {
+      const a = b.dataset.a;
+      if (a === "del") favList.splice(i, 1);
+      if (a === "up" && i > 0) [favList[i - 1], favList[i]] = [favList[i], favList[i - 1]];
+      if (a === "down" && i < favList.length - 1) [favList[i + 1], favList[i]] = [favList[i], favList[i + 1]];
+      favErrors = new Set(); renderFav();
+    });
+    readFavRow(tr, i);
+  });
+  refreshPlan();
+}
+function readFavRow(tr, i) {
+  const c = favList[i], f = n => tr.querySelector(`[data-f="${n}"]`);
+  const mark = (n, ok) => { f(n).classList.toggle("bad", !ok); ok ? favErrors.delete(`${i}.${n}`) : favErrors.add(`${i}.${n}`); };
+  c.name = asciiName(f("name").value); f("name").value = c.name;
+  const fr = Math.round(parseFloat(f("freq").value.replace(",", ".")) * 100000);
+  c.freq = fr; mark("freq", validFreq(fr));
+  c.dir = +f("dir").value;
+  const off = Math.round(Math.abs(parseFloat(f("offset").value.replace(",", "."))) * 100000);
+  c.offset = c.dir ? off : 0;
+  const tx = c.dir === 1 ? fr + off : fr - off;
+  mark("offset", !c.dir || (off > 0 && validFreq(tx)));
+  for (const t of ["txTone", "rxTone"]) { let ok = true; try { parseTone(f(t).value); } catch (_) { ok = false; } c[t] = f(t).value.trim().toUpperCase().replace(",", "."); mark(t, ok); }
+  c.powerIdx = +f("powerIdx").value; c.narrow = f("narrow").value === "1"; c.mod = +f("mod").value;
+}
+$("btnFavAdd").onclick = () => {
+  favList.push({ name: "", freq: 14550000, dir: 0, offset: 0, txTone: "", rxTone: "", powerIdx: 7, narrow: false, mod: 0, prio: false });
+  renderFav();
+};
+const POWER_BY_NAME = Object.fromEntries(POWER.map((p, i) => [asciiName(p).replace(/\s/g, ""), i]));
+function parseCsv(text) {
+  const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith("#"));
+  const out = [], errs = [];
+  lines.forEach((line, n) => {
+    const sep = line.includes(";") ? ";" : ",";
+    const col = line.split(sep).map(x => x.trim());
+    if (/^ad$/i.test(col[0])) return;   // header
+    try {
+      const num = x => parseFloat(String(x || "0").replace(",", "."));
+      const freq = Math.round(num(col[1]) * 100000);
+      if (!validFreq(freq)) throw new Error("frekans");
+      const sh = num(col[2]);
+      parseTone(col[3]); parseTone(col[4]);
+      const pw = col[5] ? POWER_BY_NAME[asciiName(col[5]).replace(/\s/g, "")] : 7;
+      if (pw === undefined) throw new Error("güç");
+      out.push({ name: asciiName(col[0]), freq, dir: sh > 0 ? 1 : sh < 0 ? 2 : 0, offset: Math.round(Math.abs(sh) * 100000),
+        txTone: (col[3] || "").toUpperCase(), rxTone: (col[4] || "").toUpperCase(), powerIdx: pw,
+        narrow: /^dar$/i.test(col[6] || ""), mod: /^am$/i.test(col[7] || "") ? 1 : 0, prio: false });
+    } catch (err) { errs.push(`satır ${n + 1} (${err.message}): ${line}`); }
+  });
+  return { out, errs };
+}
+$("favImport").onchange = async ev => {
+  const f = ev.target.files[0]; ev.target.value = "";
+  if (!f || !lastState) return;
+  const { out, errs } = parseCsv(await f.text());
+  const room = 200 - lastState.layout.favFirst - favList.length;
+  favList.push(...out.slice(0, room));
+  favErrors = new Set(); renderFav();
+  let msg = `${Math.min(out.length, room)} kanal eklendi (henüz telsize yazılmadı).`;
+  if (out.length > room) msg += ` ${out.length - room} kanal sığmadı.`;
+  if (errs.length) msg += ` Okunamayan satırlar: ${errs.join(" | ")}`;
+  setStatus(msg, errs.length ? "bad" : "ok");
+};
+$("btnFavExport").onclick = () => {
+  const rows = ["ad;alma_mhz;kaydirma_mhz;gonderme_tonu;alma_tonu;guc;bant;mod",
+    ...favList.map(c => [c.name, mhz(c.freq), c.dir ? (c.dir === 1 ? "+" : "-") + (c.offset / 100000) : "0", c.txTone, c.rxTone, POWER[c.powerIdx], c.narrow ? "Dar" : "Geniş", MODULATION[c.mod]].join(";"))];
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob(["\uFEFF" + rows.join("\r\n")], { type: "text/csv" }));
+  a.download = "favori_kanallar.csv"; a.click();
+};
+
+function kv(label, value) { return `<div class="kv"><span>${label}</span><span>${value}</span></div>`; }
+
+function show(s) {
+  lastState = s;
+  $("content").style.display = "block";
+  const g = [];
+  if (firmware) g.push(kv("Firmware", firmware));
+  g.push(kv("BMKs Survival", s.isSurvival ? `Evet (tablo sürümü ${s.tableVersion})` : "Hayır – bu firmware tanınmadı"));
+  const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+  g.push(kv("Squelch (Sessiz)", sel("squelch", range(0, 9).map(v => [v, v === 0 ? "0 – açık (parazit geçer)" : String(v)]), s.squelch)));
+  g.push(kv("Eko (pil tasarrufu)", sel("batterySave", [[5, "Açık"], [4, "Kapalı"]], s.batterySave === 5 ? 5 : 4)));
+  g.push(kv("Arka ışık süresi", sel("backlight", range(0, 61).map(v => [v, v === 0 ? "Kapalı" : v === 61 ? "Hep açık" : seconds(v * 5)]), s.backlight)));
+  g.push(kv("Tuş sesi", sel("beep", [[1, "Açık"], [0, "Kapalı"]], s.beep)));
+  g.push(kv("Otomatik kilit", sel("autoLock", range(0, 40).map(v => [v, v === 0 ? "Kapalı" : seconds(v * 15)]), s.autoLock)));
+  g.push(kv("TX süre sınırı", sel("tot", range(5, 179).map(v => [v, seconds((v + 1) * 5)]), s.tot)));
+  g.push(kv("Mikrofon kazancı", sel("mic", MIC.map((t, i) => [i, t]), s.mic)));
+  g.push(kv("FM arka plan izleme", sel("fmScan", s.layout.fmScan.map((t, i) => [i, t]), s.fmScan)));
+  g.push(kv("OZEL başlangıç (MHz)", `<input type="number" id="ed_customStart" step="0.0125" min="18" max="1300" value="${mhz(s.customStart)}">`));
+  g.push(kv("OZEL bitiş (MHz)", `<input type="number" id="ed_customEnd" step="0.0125" min="18" max="1300" value="${mhz(s.customEnd)}">`));
+  const prio = s.channels.find(c => c.prio);
+  g.push(kv("Öncelikli kanal", prio ? `${prio.ch + 1} ${prio.name}` : "Yok"));
+  $("general").innerHTML = g.join("");
+
+  $("txmask").innerHTML = s.layout.txBits.map(i => [TX_BITS[i], i]).map(([n, i]) => `<label class="${(s.txMask >> i) & 1 ? "on" : "off"}"><input type="checkbox" id="ed_tx${i}" ${(s.txMask >> i) & 1 ? "checked" : ""}> ${n}</label>`).join("");
+  document.querySelectorAll("#general select, #general input, #txmask input").forEach(x => x.onchange = refreshPlan);
+  renderFav();
+
+  GROUPS = s.layout.groups;
+  const names = ["TUMU", ...GROUPS.map(g => g.name)];
+  $("filters").innerHTML = names.map(n => `<button class="${n === channelFilter ? "sel" : ""}" data-g="${n}">${n === "TUMU" ? "Tümü" : n} (${n === "TUMU" ? s.channels.length : s.channels.filter(c => c.group === n).length})</button>`).join("");
+  $("filters").querySelectorAll("button").forEach(b => b.onclick = () => { channelFilter = b.dataset.g; show(lastState); });
+
+  const rows = s.channels.filter(c => channelFilter === "TUMU" || c.group === channelFilter);
+  $("channels").innerHTML =
+    `<tr><th>No</th><th>Grup</th><th>Ad</th><th>Alma MHz</th><th>Gönderme MHz</th><th>Mod</th><th>Bant</th><th>Güç</th><th>Alma ton/kod</th><th>Gönd. ton/kod</th></tr>` +
+    (rows.length ? rows.map(c => `<tr><td class="num">${c.ch + 1}${c.prio ? ' <span class="prio">ÖNC</span>' : ""}</td><td>${c.group}</td><td>${c.name || '<span class="empty">–</span>'}</td>` +
+      `<td class="num">${mhz(c.freq)}</td><td class="num">${c.tx === c.freq ? '<span class="empty">aynı</span>' : mhz(c.tx)}</td><td>${c.modulation}</td>` +
+      `<td>${c.narrow ? "Dar" : "Geniş"}</td><td>${c.power}</td><td>${c.rxCode}</td><td>${c.txCode}</td></tr>`).join("")
+      : `<tr><td colspan="10" class="empty">Bu grupta kanal yok.</td></tr>`);
+
+  $("skip").innerHTML = s.skip.length
+    ? `<div class="tags">${s.skip.map(f => `<span class="on">${mhz(f)} MHz</span>`).join("")}</div><div class="empty" style="font-size:13px">${s.skip.length} / 16 dolu</div>`
+    : `<span class="empty">Boş. Telsizde F+8 ile frekans eklenir.</span>`;
+
+  $("fm").innerHTML = s.fm.length
+    ? `<div class="tags">${s.fm.map(x => `<span class="on">${x.slot}: ${x.mhz.toFixed(1)} MHz</span>`).join("")}</div>`
+    : `<span class="empty">Kayıtlı istasyon yok.</span>`;
+}
+</script>
+</body>
+</html>

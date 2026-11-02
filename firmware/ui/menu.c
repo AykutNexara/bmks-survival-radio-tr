@@ -75,7 +75,6 @@ const t_menu_item MenuList[] =
     {"Basla",       MENU_SRV_C_START,    "TARAMA BAS" },
     {"Bitis",         MENU_SRV_C_END,      "TARAMA SON"   },
     {"TxPMR",       MENU_SRV_TX_PMR,     "PMR TX"   },
-    {"TxFRS",       MENU_SRV_TX_FRS,     "FRS TX"   },
     {"TxDNZ",       MENU_SRV_TX_MARINE,  "DENIZ TX"},
     {"TxAMT",       MENU_SRV_TX_HAM,     "AMATOR TX"   },
     {"TxCB",        MENU_SRV_TX_CB,      "CB TX"    },

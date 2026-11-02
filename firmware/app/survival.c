@@ -38,10 +38,10 @@
 #define SURV_RANGE_START   14400000   // 144.000 MHz
 #define SURV_RANGE_END     14600000   // 146.000 MHz
 // bump when the channel tables or defaults change, radios re-init on next boot
-#define SURV_TABLE_VERSION 6
+#define SURV_TABLE_VERSION 7   // TR edition: FRS group removed, channels re-written
 // bump for setting changes that existing radios get without a re-init (byte 7)
 #define SURV_SETTINGS_REV  3
-#define SURV_TX_DEFAULT    ((1u << SURV_TX_PMR) | (1u << SURV_TX_FRS))
+#define SURV_TX_DEFAULT    (1u << SURV_TX_PMR)   // TR edition: no FRS (US/CA service, not allowed in Turkey)
 
 static const uint8_t SURV_MAGIC[4] = {'B', 'M', 'K', 'S'};
 
@@ -95,7 +95,7 @@ static void RemoveSkip(uint8_t index)
 }
 
 const char gSubMenu_SRV_MODE[SURV_MODE_COUNT][9] = {
-    "PMR446", "FRS", "DENIZ", "HAVA", "AMATOR", "CB", "FM RADYO", "OZEL", "FAVORI",
+    "PMR446", "DENIZ", "HAVA", "AMATOR", "CB", "FM RADYO", "OZEL", "FAVORI",
 };
 
 #define SURV_AM     (1u << 0)
@@ -110,8 +110,6 @@ typedef struct {
 
 static const TxBand_t TX_BANDS[] = {
     {44600625, 44619375, SURV_TX_PMR},
-    {46255000, 46272500, SURV_TX_FRS},
-    {46755000, 46772500, SURV_TX_FRS},
     {15600000, 15742500, SURV_TX_MARINE},   // ship side only, coast frequencies are RX
     {14400000, 14800000, SURV_TX_HAM},  // 2 m, widest (region 2/3)
     {42000000, 45000000, SURV_TX_HAM},  // 70 cm, widest (region 2)
@@ -137,11 +135,6 @@ typedef struct {
     const char     *names;   // NUL separated names, overrides prefix/nums
 } SurvivalGroup_t;
 
-static const uint32_t FRS_FREQS[] = {
-    46256250, 46258750, 46261250, 46263750, 46266250, 46268750, 46271250,
-    46756250, 46758750, 46761250, 46763750, 46766250, 46768750, 46771250,
-    46255000, 46257500, 46260000, 46262500, 46265000, 46267500, 46270000, 46272500,
-};
 
 // distress/calling first, then the common simplex ship channels, then the
 // duplex channels on the coast station frequency (coastguard MSI, ports, VTS);
@@ -190,7 +183,6 @@ static const uint32_t CB_FREQS[] = {
 
 static const SurvivalGroup_t GROUPS[] = {
     {"PMR ", NULL,         44600625, 1250, 16,                      SURV_NARROW,           NULL,        NULL},
-    {"FRS ", FRS_FREQS,    0,        0,    ARRAY_SIZE(FRS_FREQS),    0,                     NULL,        NULL},
     {"MAR ", MARINE_FREQS, 0,        0,    ARRAY_SIZE(MARINE_FREQS), SURV_HIGH,             MARINE_NUMS, NULL},
     {"",     NULL,         0,        0,    0,                        SURV_AM,               NULL,        NULL},   // AIR: band mode, no channels
     {"",     HAM_FREQS,    0,        0,    ARRAY_SIZE(HAM_FREQS),    SURV_HIGH,             NULL,        HAM_NAMES},

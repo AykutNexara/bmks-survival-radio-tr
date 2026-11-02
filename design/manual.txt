@@ -39,7 +39,6 @@ F tekrar>Iptal
 == GRUPLAR
 M kisa: grup degis
 PMR446 AB, 16 kn
-FRS ABD/KAN, 22 kn
 DENIZ VHF + hava
   durumu (WX)
 HAVA 118-137 AM
@@ -84,7 +83,7 @@ M ile FAVORI grup:
   kullan, tara
 Menu>Ileri>Isim
   ad verir
-58 yer
+80 yer
 
 == ONCELIK
 F+5>Bu kanal
@@ -139,7 +138,7 @@ Sadece izinli
 == GONDERME
 PTT sadece izinli
   bantta FM yollar
-PMR, FRS: acik
+PMR: acik
 DENIZ, AMATOR, CB:
   Ileri>TxDNZ,
   TxAMT, TxCB

@@ -165,7 +165,7 @@ enum
 #ifdef ENABLE_SURVIVAL
     MENU_SRV_GROUP,
     MENU_SRV_TX_PMR,    // order must match SURV_TX_*
-    MENU_SRV_TX_FRS,
+    MENU_SRV_TX_FRS,    // TR edition: not in the menu (no FRS), kept for the bit order
     MENU_SRV_TX_MARINE,
     MENU_SRV_TX_HAM,
     MENU_SRV_TX_CB,

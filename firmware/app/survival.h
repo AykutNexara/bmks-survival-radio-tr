@@ -18,7 +18,6 @@
 
 enum {
     SURV_MODE_PMR = 0,
-    SURV_MODE_FRS,
     SURV_MODE_MARINE,
     SURV_MODE_AIR,
     SURV_MODE_HAM,
@@ -32,7 +31,7 @@ enum {
 // TX permission bits, one per transmit capable band
 enum {
     SURV_TX_PMR = 0,
-    SURV_TX_FRS,
+    SURV_TX_FRS,      // TR edition: unused, kept so the bit positions stay the same
     SURV_TX_MARINE,
     SURV_TX_HAM,
     SURV_TX_CB,
